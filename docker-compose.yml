@@ -10,13 +10,17 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
   web:
-    build: .
+    build: 
+      context: .
+      args:
+        # todo: make this dynamic
+        USERID: 1000
+        GROUPID: 1000
     command: python manage.py runserver 0.0.0.0:8002
     volumes:
       - .:/code
     ports:
       - "8002:8002"
-    user: "${UID}:${GID}"
     environment:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres

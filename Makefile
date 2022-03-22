@@ -1,2 +1,11 @@
-up:
-	@UID=$(id -u) GID=$(id -g) docker-compose up
+build: 
+	@USERID=$(id -u) GROUPID=$(id -g) docker-compose build
+
+up: 
+	@USERID=$(id -u) GROUPID=$(id -g) docker-compose up
+
+up-d:
+	@export UID=${CURRENT_UID}; export GID=${CURRENT_GID}; docker-compose up -d
+
+down: 
+	@USERID=$(id -u) GROUPID=$(id -g) docker-compose down

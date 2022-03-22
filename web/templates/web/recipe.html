@@ -1,0 +1,16 @@
+
+<!--Register--> 
+<form action="/recipe/" method="post">
+  {% csrf_token %}
+  <div>
+    {{ form.title }}
+  </div>
+  <div>
+    {{ form.tags }}
+  </div>
+  <div>
+    {{ form.recipe }}
+  </div>
+  <input type="submit" value="Submit">
+</form>
+
