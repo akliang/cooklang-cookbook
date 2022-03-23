@@ -9,5 +9,5 @@ urlpatterns = [
   path('logout/', views.logout, name='logout'),
   path('register/', views.register, name='register'),
   path('recipe/', views.recipe, name='recipe'),
-  path('v/<str:username>/<str:title>', views.view, name='view'),
+  path('v/<str:username>/<str:filename>', views.view, name='view'),
 ]

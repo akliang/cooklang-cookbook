@@ -1,21 +1,20 @@
-from django.shortcuts import render
-
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import  render, redirect
-from .forms import LoginForm, RegisterForm, ModifyRecipe
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+from .forms import LoginForm, RegisterForm, ModifyRecipe
 from .cooklang_processor import process as clprocess
-from django.contrib.auth import authenticate, login
 
 
 def index(request):
   if request.user.is_authenticated:
     return HttpResponse("Hello, world. You're at the polls index.")
   else:
-    return HttpResponseRedirect('/login')
+    return redirect('web:login')
 
 def login(request):
   if request.method == "POST":
@@ -28,16 +27,16 @@ def login(request):
   # at this point, you are either logged in or not
   if request.user.is_authenticated:
     if request.POST.get('next'):
-      return HttpResponseRedirect(request.POST.get('next'))
+      return redirect(request.POST.get('next'))
     else:
-      return HttpResponseRedirect('/')
+      return redirect('web:index')
   else:
     login_form = LoginForm()
     return render(request=request, template_name="web/login.html", context={"form":login_form})
 
 def logout(request):
   auth_logout(request)
-  return HttpResponseRedirect('/')
+  return redirect('web:index')
 
 def register(request):
   if request.method == "POST":
@@ -67,15 +66,15 @@ def recipe(request):
         file.write(f">> tags: {form.cleaned_data['tags']}\n")
         file.write(form.cleaned_data['recipe'])
       
-      return HttpResponseRedirect('/')
+      return redirect('web:view', username=request.user.username, filename=filename)
   else:
     form = ModifyRecipe()
 
   return render(request, 'web/recipe.html', {'form': form})
 
-def view(request, username, title):
-  title = title.lower()
-  data = clprocess(f"./data/recipes/{username}/{title}.cook")
+def view(request, username, filename):
+  filename = filename.lower()
+  data = clprocess(f"./data/recipes/{username}/{filename}.cook")
 
   if request.user.is_authenticated and request.user.username == username:
     edit = True
