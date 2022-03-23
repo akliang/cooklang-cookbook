@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import  render, redirect
-from .forms import LoginForm, ModifyRecipe
+from .forms import LoginForm, RegisterForm, ModifyRecipe
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
@@ -41,17 +41,20 @@ def logout(request):
 
 def register(request):
   if request.method == "POST":
-    form = NewUserForm(request.POST)
+    form = RegisterForm(request.POST)
 
     if form.is_valid():
-      user = form.save()
-      login(request, user)
-      messages.success(request, "Registration successful." )
-      return redirect("web:index")
-    messages.error(request, "Unsuccessful registration. Invalid information.")
-  
-  form = NewUserForm()
-  return render(request=request, template_name="web/register.html", context={"register_form":form})
+      if form.cleaned_data['password'] != form.cleaned_data['password2']:
+        return HttpResponse("Password doesn't match.")
+      else:
+        user = form.save()
+        auth_login(request, user)
+        return redirect("web:index")
+    else:
+      return HttpResponse("Registration error.")
+  else:
+    form = RegisterForm()
+    return render(request=request, template_name="web/register.html", context={"form":form})
 
 @login_required
 def recipe(request):
