@@ -5,30 +5,41 @@ from django.contrib.auth.models import User
 
 # Create your forms here.
 
-class NewUserForm(UserCreationForm):
-	email = forms.EmailField(required=True)
+class LoginForm(forms.Form):
+  username = forms.CharField(
+    max_length=255,
+    widget=forms.TextInput(attrs={'placeholder': 'Username'}),
+    required=True,
+  )
 
-	class Meta:
-		model = User
-		fields = ("username", "email", "password1", "password2")
+  password = forms.CharField(
+    max_length=255,
+    widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
+    required=True
+  )
 
-	def save(self, commit=True):
-		user = super(NewUserForm, self).save(commit=False)
-		user.email = self.cleaned_data['email']
-		if commit:
-			user.save()
-		return user
+  class Meta:
+    model = User
+    fields = ("username", "password")
+
+	# def save(self, commit=True):
+	# 	user = super(NewUserForm, self).save(commit=False)
+	# 	user.email = self.cleaned_data['email']
+	# 	if commit:
+	# 		user.save()
+	# 	return user
 
 class ModifyRecipe(forms.Form):
   title = forms.CharField(
-    label='Recipe title',
     max_length=255,
     widget=forms.TextInput(attrs={'placeholder': 'Recipe Title'}),
-    required=True)
+    required=True
+  )
   tags = forms.CharField(
-    label='Tags',
     max_length=255,
-      widget=forms.TextInput(attrs={'placeholder': 'Tags'}))
+    widget=forms.TextInput(attrs={'placeholder': 'Tags'})
+  )
   recipe = forms.CharField(
-    widget=forms.Textarea(attrs={'placeholder': 'Recipe goes here'}))
+    widget=forms.Textarea(attrs={'placeholder': 'Recipe goes here'})
+  )
 
