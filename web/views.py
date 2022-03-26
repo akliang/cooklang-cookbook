@@ -1,3 +1,4 @@
+import os
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
@@ -48,6 +49,8 @@ def register(request):
       else:
         user = form.save()
         auth_login(request, user)
+        # create the user folder for recipes
+        os.mkdir(os.path.join('data','recipes',form.cleaned_data['username']))
         return redirect("web:index")
     else:
       return HttpResponse("Registration error.")
