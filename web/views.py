@@ -1,4 +1,5 @@
 import os
+import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
@@ -9,6 +10,7 @@ from django.contrib import messages
 
 from .forms import LoginForm, RegisterForm, ModifyRecipe
 from .cooklang_processor import process as clprocess
+from web.helpers import write_formdata_to_cookfile
 
 
 def index(request):
@@ -61,19 +63,32 @@ def register(request):
 @login_required
 def recipe(request):
   if request.method == 'POST':
-    form = ModifyRecipe(request.POST)
-    if form.is_valid():
-      filename = form.cleaned_data['title'].replace(" ","-").lower()
-      with open(f"./data/recipes/{request.user.username}/{filename}.cook", "w") as file:
-        file.write(f">> title: {form.cleaned_data['title']}\n")
-        file.write(f">> tags: {form.cleaned_data['tags']}\n")
-        file.write(form.cleaned_data['recipe'])
-      
-      return redirect('web:view', username=request.user.username, filename=filename)
+    # if the edit flag is found, then enter edit-mode
+    if request.POST.get("edit"):
+      # rearrange the request.POST data so it fits into the form
+      form_data = {}
+      meta = request.POST.get('meta')
+      # meta is a literal string with single quotes, but we need to conver it back into a dict
+      meta = json.loads(meta.replace("'", '"'))
+      for key,value in meta.items():
+        form_data[key] = value
+      form_data['recipe'] = request.POST.get('recipe')
+      form = ModifyRecipe(form_data)
+      return render(request, 'web/recipe.html', {'form': form})
+    else:
+      # otherwise, assume we are inserting a new recipe
+      form = ModifyRecipe(request.POST)
+      # write the form data to cook file
+      if form.is_valid():
+        filename = write_formdata_to_cookfile(request, form.cleaned_data)
+        return redirect('web:view', username=request.user.username, filename=filename)
+      else:
+        # send them back to the recipe form with prepopulated fields
+        return render(request, 'web/recipe.html', {'form': form})
   else:
+    # render the blank form
     form = ModifyRecipe()
-
-  return render(request, 'web/recipe.html', {'form': form})
+    return render(request, 'web/recipe.html', {'form': form})
 
 def view(request, username, filename):
   filename = filename.lower()

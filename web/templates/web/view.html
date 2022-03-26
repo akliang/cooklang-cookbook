@@ -1,10 +1,24 @@
+{{data.title }}
 
-{{ data.meta }}
+<br><br>
+
+Meta:
+{% for key,value in data.meta.items %}
+  {{key}} --> {{value}}<br>
+{% endfor %}
+
 
 <br><br>
 
 {{ data.recipe|linebreaks }}
 
 {% if edit %}
-Edit
+<form action="/recipe/" method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="edit" value="true">
+  {% for key,value in data.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+  {% endfor %}
+  <input type="submit" value="Edit">
+</form>
 {% endif %}

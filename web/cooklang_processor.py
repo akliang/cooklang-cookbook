@@ -8,14 +8,14 @@ def process(recipe):
   ingredients = []
   cookware = []
   timers = []
-  meta = []
+  meta = {}
   recipe = []
   for line in recipe_file:
     ingredients += _do_regex("@", line)
     cookware += _do_regex("#", line)
     timers += _do_regex("~", line)
-    if _do_meta(line):
-      meta.append(_do_meta(line))
+    if data := _do_meta(line):
+      meta[data[0]] = data[1]
     else:
       recipe.append(line)
 
@@ -23,7 +23,6 @@ def process(recipe):
   ingredients = list(filter(None, ingredients))
   cookware = list(filter(None, cookware))
   timers = list(filter(None, timers))
-  meta = list(filter(None, meta))
 
   # convert recipe from a list into a string
   recipe = "\n".join(recipe)
