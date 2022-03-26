@@ -9,3 +9,6 @@ up-d:
 
 down: 
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose down
+
+test:
+	@docker-compose run web python3 manage.py test
