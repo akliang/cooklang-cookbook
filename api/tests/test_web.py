@@ -12,7 +12,7 @@ class LoginLogoutRegisterTests(TestCase):
 
   def test_homepage_while_anonymous(self):
     response = self.client.get('/', follow=True)
-    self.assertRedirects(response, f'{reverse("web:login")}?next=%2F')
+    self.assertRedirects(response, f'{reverse("api:login")}?next=%2F')
 
   def test_login_while_anonymous(self):
     response = self.client.get('/login/')
@@ -20,11 +20,11 @@ class LoginLogoutRegisterTests(TestCase):
 
   def test_logout_while_anonymous(self):
     response = self.client.get('/logout/', follow=True)
-    self.assertRedirects(response, f'{reverse("web:login")}?next=%2F')
+    self.assertRedirects(response, f'{reverse("api:login")}?next=%2F')
 
   def test_recipe_while_anonymous(self):
     response = self.client.get('/recipe/', follow=True)
-    self.assertRedirects(response, f'{reverse("web:login")}?next=%2Frecipe%2F')
+    self.assertRedirects(response, f'{reverse("api:login")}?next=%2Frecipe%2F')
 
   def test_recipe_view_while_anonymous(self):
     response = self.client.get(f'/v/{self.username}/test_recipe')
@@ -38,12 +38,12 @@ class LoginLogoutRegisterTests(TestCase):
   def test_login_while_logged_in(self):
     self.client.login(username=self.username, password=self.password)
     response = self.client.get('/login/', follow=True)
-    self.assertRedirects(response, reverse("web:index"))
+    self.assertRedirects(response, reverse("api:index"))
 
   def test_logout_while_logged_in(self):
     self.client.login(username=self.username, password=self.password)
     response = self.client.get('/logout/', follow=True)
-    self.assertRedirects(response, f'{reverse("web:login")}?next=%2F')
+    self.assertRedirects(response, f'{reverse("api:login")}?next=%2F')
 
   def test_recipe_while_logged_in(self):
     self.client.login(username=self.username, password=self.password)
