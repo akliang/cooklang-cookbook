@@ -7,7 +7,7 @@
 - wysiwyg
 - auto ingredient highlighting
 - auto-preview recipe
-- break up views
+- DRF
 
 # Testing TODO:
 - edit recipe

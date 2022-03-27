@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 import pytest
 
 # import cooklang_processor as c
-from web import cooklang_processor as c
+from api import cooklang_processor as c
 
 @pytest.fixture
 def recipe(tmp_path):

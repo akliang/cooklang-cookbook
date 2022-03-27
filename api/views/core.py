@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from web.forms import ModifyRecipe
-from web.cooklang_processor import process as clprocess
-from web.helpers import write_formdata_to_cookfile
+from api.forms import ModifyRecipe
+from api.cooklang_processor import process as clprocess
+from api.helpers import write_formdata_to_cookfile
 
 @login_required
 def recipe(request):

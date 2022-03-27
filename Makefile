@@ -12,3 +12,6 @@ down:
 
 test:
 	@docker-compose run web python3 manage.py test
+
+conn-api:
+	@docker exec -it cooklang-cookbook_api_1 bash

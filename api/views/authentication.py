@@ -7,14 +7,11 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from web.forms import LoginForm, RegisterForm
+from api.forms import LoginForm, RegisterForm
 
-
+@login_required
 def index(request):
-  if request.user.is_authenticated:
-    return HttpResponse("Hello, world. You're at the polls index.")
-  else:
-    return redirect('web:login')
+  return HttpResponse("Hello, world. You're at the polls index.")
 
 def login(request):
   if request.method == "POST":
