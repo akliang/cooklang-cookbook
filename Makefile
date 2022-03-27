@@ -11,7 +11,7 @@ down:
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose down
 
 test:
-	@docker-compose run web python3 manage.py test
+	@docker-compose run api python3 manage.py test
 
 conn-api:
 	@docker exec -it cooklang-cookbook_api_1 bash
