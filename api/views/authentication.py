@@ -26,14 +26,14 @@ def login(request):
     if request.POST.get('next'):
       return redirect(request.POST.get('next'))
     else:
-      return redirect('web:index')
+      return redirect('api:index')
   else:
     login_form = LoginForm()
-    return render(request=request, template_name="web/login.html", context={"form":login_form})
+    return render(request=request, template_name="api/login.html", context={"form":login_form})
 
 def logout(request):
   auth_logout(request)
-  return redirect('web:index')
+  return redirect('api:index')
 
 def register(request):
   if request.method == "POST":
@@ -47,10 +47,10 @@ def register(request):
         auth_login(request, user)
         # create the user folder for recipes
         os.mkdir(os.path.join('data','recipes',form.cleaned_data['username']))
-        return redirect("web:index")
+        return redirect("api:index")
     else:
       return HttpResponse("Registration error.")
   else:
     form = RegisterForm()
-    return render(request=request, template_name="web/register.html", context={"form":form})
+    return render(request=request, template_name="api/register.html", context={"form":form})
 
