@@ -1,6 +1,9 @@
 build: 
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose build
 
+build-no-cache:
+	@USERID=$(id -u) GROUPID=$(id -g) docker-compose build --no-cache
+
 up: 
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose up
 
