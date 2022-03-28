@@ -1,0 +1,18 @@
+# syntax=docker/dockerfile:1
+FROM debian:bullseye-slim
+
+RUN apt-get update && apt -y upgrade && apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_17.x | bash -
+RUN apt-get install -y nodejs
+
+WORKDIR /code
+COPY ./frontend/package.json .
+RUN npm install --quiet
+
+ARG USERID
+ARG GROUPID
+RUN adduser --disabled-password --gecos "" -u $USERID user
+# fix bug where npm cache folder contains root-owned files
+RUN chown -R $USERID:$GROUPID "/root/.npm"
+
+USER user
