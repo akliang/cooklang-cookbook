@@ -8,6 +8,7 @@
 - auto ingredient highlighting
 - auto-preview recipe
 - DRF
+- add 404 page to express
 
 # Testing TODO:
 - edit recipe
