@@ -3,7 +3,7 @@ const app = express();
 app.use(express.static('static'));
 
 const { engine } = require ('express-handlebars');
-app.engine('.hbs', engine({extname: '.hbs'}));
+app.engine('.hbs', engine({extname: '.hbs', defaultLayout: 'body'}));
 app.set('view engine', '.hbs');
 app.set('views', './views');
 
@@ -13,5 +13,9 @@ const server = app.listen(port, () => {
 });
 
 app.get('/', (req, res) => {
-  res.render('home', {layout : 'main'});
+  res.render('home');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
 });
