@@ -27,6 +27,22 @@ services:
       - POSTGRES_USER=postgres
     depends_on:
       - db
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        # todo: make this dynamic
+        USERID: 1000
+        GROUPID: 1000
+    command: npm start
+    volumes:
+      - ./frontend:/code
+      - /code/node_modules
+    ports:
+      - "8003:8003"
+    depends_on:
+      - api
 
 volumes:
   pgdata:
