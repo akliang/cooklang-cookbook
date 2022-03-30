@@ -56,5 +56,9 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/recipe', (req, res) => {
-  res.render('recipe');
+  res.render('add_recipe');
+});
+
+app.get('/v', (req, res) => {
+  res.render('view_recipe');
 });
