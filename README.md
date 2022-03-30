@@ -9,6 +9,9 @@
 - auto-preview recipe
 - DRF
 - add 404 page to express
+- logout
+- login failure message
+- image server?
 
 # Testing TODO:
 - edit recipe
@@ -29,3 +32,5 @@ dc build --no-cache frontend
 - fry pan: <a href="https://www.flaticon.com/free-icons/cooking" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
 - list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
 - person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
+- checkmark: <a href="https://www.flaticon.com/free-icons/correct" title="correct icons">Correct icons created by Freepik - Flaticon</a>
+- fancy hr: https://codepen.io/Moiety/pen/eYarPq
