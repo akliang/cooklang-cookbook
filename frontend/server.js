@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.use(express.static('static'));
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 
 // handlebars
 const { engine } = require ('express-handlebars');
@@ -62,3 +62,8 @@ app.get('/recipe', (req, res) => {
 app.get('/v', (req, res) => {
   res.render('view_recipe');
 });
+
+app.get('/temp', (req, res) => {
+  res.render('temp');
+});
+

@@ -12,6 +12,8 @@
 - logout
 - login failure message
 - image server?
+- coverage
+- separate server/env for testing?
 
 # Testing TODO:
 - edit recipe
