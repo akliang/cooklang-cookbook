@@ -1,63 +1,34 @@
 <div class="text-3xl my-6 font-bold p-6">
-  Chicken noodle soup with very long title very very long title super long withlongwords too
+  {{title}}
 </div>
 
 
-<img src="./img/image1.png" class="w-3/4 rounded-sm mx-auto my-6">
+<img src="/img/image1.png" class="w-3/4 rounded-sm mx-auto my-6">
 
 <table class="table-fixed w-3/4 mx-auto text-sm">
   <tbody>
-    <tr>
-      <td class="w-1/2 text-right p-3">Chicken</td>
-      <td class="text-left p-3">1 piece</td>
-    </tr>
-    <tr>
-      <td class="w-1/2 text-right p-3">Onion</td>
-      <td class="text-left p-3">1 bulb</td>
-    </tr>
-    <tr>
-      <td class="w-1/2 text-right p-3">Carrot</td>
-      <td class="text-left p-3">3 sticks</td>
-    </tr>
-    <tr>
-      <td class="w-1/2 text-right p-3">Water</td>
-      <td class="text-left p-3">4 cups</td>
-    </tr>
-    <tr>
-      <td class="w-1/2 text-right p-3">Noodle</td>
-      <td class="text-left p-3"></td>
-    </tr>
-    <tr>
-      <td class="w-1/2 text-right p-3">Super long ingredient why not</td>
-      <td class="text-left p-3">And it has a long unit too</td>
-    </tr>
+    {{#each ingredients}}
+      <tr>
+        <td class="w-1/2 text-right p-3">{{@key}}</td>
+        <td class="text-left p-3">{{this}}</td>
+      </tr>
+    {{/each}}
   </tbody>
 </table>
  
 <hr class="w-1/2 mx-auto h-px border-slate-400 m-6">
 
-<div class="w-1/2 mx-auto text-sm mb-6">
-  <div class="flex flex-row mb-6">
-    <div class="flex-none">
-      <img src="./img/check-mark.png" class="w-12 p-1 pr-6">
-    </div>
-    <div class="flex-auto text-left p-1">
-      Cut chicken, boil water
-      Cut chicken, boil water
-      Cut chicken, boil water
-      Cut chicken, boil water
-      Cut chicken, boil water
-      Cut chicken, boil water
-      Cut chicken, boil water
-    </div>
-  </div>
-
-  <div class="flex flex-row mb-6">
-    <div class="flex-none">
-      <img src="./img/check-mark.png" class="w-12 p-1 pr-6">
-    </div>
-    <div class="flex-auto text-left p-1">
-      Short
-    </div>
-  </div>
-</div>
+<table class="max-w-md mx-auto text-sm mb-6">
+  <tbody>
+    {{#each recipe}}
+      <tr>
+        <td class="pb-3 pr-2 align-top">
+          <input type="checkbox" class="border-slate-300 hover:border-slate-500 w-8 h-8">
+        </td>
+        <td class="pb-3 text-left">
+          {{this}}
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -26,15 +26,18 @@ def cooklang_processor(recipe):
     if data := _cl_do_meta(line):
       meta[data[0]] = data[1]
     else:
-      recipe.append(line)
+      recipe.append(_clean_line(line))
 
   # remove all None elemenets from lists
   ingredients = list(filter(None, ingredients))
   cookware = list(filter(None, cookware))
   timers = list(filter(None, timers))
 
-  # convert recipe from a list into a string
-  recipe = "\n".join(recipe)
+  # delete empty rows
+  recipe = [i for i in recipe if i]
+
+  # convert ingredient list to dictionary
+  ingredients = {i[0]: i[1] for i in ingredients}
 
   return {
     'ingredients': ingredients,
@@ -77,3 +80,9 @@ def _cl_do_meta(line):
     return match.groups()
   else:
     return None
+
+def _clean_line(line):
+  temp = re.sub("@", "", line)
+  temp = re.sub("\{.*?\}", "", temp)
+  temp = temp.replace("\n", "")
+  return temp
