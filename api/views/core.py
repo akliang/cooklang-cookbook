@@ -10,6 +10,7 @@ from api.helpers import write_formdata_to_cookfile
 from rest_framework.views import APIView
 import os
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 @login_required
 def recipe(request):
@@ -52,19 +53,19 @@ def view(request, username, filename):
 
   return render(request=request, template_name="api/view.html", context={'data': data, 'edit': edit})
 
+class MyRecipesView(APIView):
+  permission_classes = [IsAuthenticated]
 
-class RecipeView(APIView):
   def get(self, request, *args, **kw):
     queryset = []
-
-    if 'recipe' in kw:
-      queryset.append(clprocess(f"./data/recipes/{kw['user']}/{kw['recipe']}.cook"))
-    else:
-      user_path = f"./data/recipes/{kw['user']}/"
-      for filename in os.listdir(user_path):
-        queryset.append(clprocess(os.path.join(user_path, filename)))
-
+    user_path = f"./data/recipes/{kw['user']}/"
+    for filename in os.listdir(user_path):
+      queryset.append(clprocess(os.path.join(user_path, filename)))
     return Response(queryset)
 
-  def post(self, request, *args, **kw):
-    pass
+class RecipeView(APIView):
+  # permission_classes = [IsAuthenticated]
+  
+  def get(self, request, *args, **kw):
+    return Response(clprocess(f"./data/recipes/{kw['user']}/{kw['recipe']}.cook"))
+
