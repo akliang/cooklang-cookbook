@@ -6,6 +6,11 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from rest_framework.response import Response
+from rest_framework import views, permissions, authentication
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from django.utils.decorators import method_decorator
 
 from api.forms import LoginForm, RegisterForm
 
@@ -31,6 +36,22 @@ def login(request):
     login_form = LoginForm()
     return render(request=request, template_name="api/login.html", context={"form":login_form})
 
+@method_decorator(csrf_exempt, name='dispatch')
+class ApiLogin(APIView):
+  def post(self, request):
+    form = LoginForm(request.POST)
+    if form.is_valid():
+      user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+      if user is not None:
+        auth_login(request, user)
+
+    # at this point, you are either logged in or not
+    if request.user.is_authenticated:
+      return Response(user)
+    else:
+      return HttpResponse("NOPE")
+
+    
 def logout(request):
   auth_logout(request)
   return redirect('api:index')
