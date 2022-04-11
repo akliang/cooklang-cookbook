@@ -4,6 +4,7 @@ from api import views
 
 urlpatterns = [
   path('', views.index, name='index'),
+  path('api_token_auth/', views.CustomAuthToken.as_view(), name='api_token_auth'),
   path('login/', views.login, name='login'),
   path('api_login/', views.ApiLogin.as_view(), name='api_login'),
   path('logout/', views.logout, name='logout'),
@@ -12,4 +13,5 @@ urlpatterns = [
   # path('v/<str:username>/<str:filename>', views.view, name='view'),
   path('view/<str:user>/', views.MyRecipesView.as_view(), name='MyRecipesView'),
   path('view/<str:user>/<str:recipe>', views.RecipeView.as_view(), name='RecipeView'),
+  # path('view/<str:user>/<str:recipe>', views.recipe_view, name='temp'),
 ]

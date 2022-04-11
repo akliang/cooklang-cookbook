@@ -1,19 +1,29 @@
 const express = require('express');
 const router = express.Router();
+const qs = require('qs');
+const fetch = require('node-fetch');
+var setCookie = require('set-cookie-parser');
 
+const api_url = "https://cookbook.albertliang.xyz/api/";
+
+// TODO: move this up to server.js and pass as object input to router.js
 // axios setup
 const https = require('https');
-const axios = require('axios');
-const instance = axios.create({
-  baseURL: 'http://cookbook.albertliang.xyz/api/',
-  xsrfHeaderName: "X-CSRFTOKEN",
-  xsrfCookieName: "csrftoken",
-  withCredentials: true,
-  httpsAgent: new https.Agent({  
-    rejectUnauthorized: false
-  })
-  // TODO: set-crsf endpoint
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
 });
+// const axios = require('axios');
+// const instance = axios.create({
+//   baseURL: 'https://cookbook.albertliang.xyz/api/',
+//   xsrfHeaderName: "X-CSRFTOKEN",
+//   xsrfCookieName: "csrftoken",
+//   withCredentials: true,
+//   // TODO: remove this when real SSL is in
+//   httpsAgent: new https.Agent({  
+//     rejectUnauthorized: false
+//   })
+//   // TODO: set-crsf endpoint
+// });
 
 // router
 router.get('/', (req, res) => {
@@ -25,20 +35,40 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  instance.post('/api_login/', {
-    username: req.body.username,
-    password: req.body.password
-  }, {
+  fetch('https://cookbook.albertliang.xyz/api/api_login/', {
+    method: 'POST',
+    body: qs.stringify({
+      'username': req.body.username,
+      'password': req.body.password
+    }),
+    agent: httpsAgent,
+    credentials: 'include',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Access-Control-Allow-Origin': 'https://albertliang.xyz:8003'
     }
   })
-  .then(function(response) {
-    console.log("Login successsful for user: " + req.body.username);
+  .then(response => { 
+    const cookies = setCookie.parse(response.headers.raw()['set-cookie'], {
+      decodeValues: true,
+    });
+    cookies.forEach(cookie => {
+      res.cookie(cookie['name'], cookie['value'], {
+        expires: cookie['expires'],
+        httpOnly: cookie['httpOnly'],
+        maxAge: cookie['maxAge'],
+        path: cookie['path'],
+        sameSite: cookie['sameSite'],
+        secure: cookie['secure'],
+      })
+    });
+    return response.text();
   })
-  .catch(function(error) {
-    // TODO: login failures not being caught here (they show up as successful in .then block)
-    console.error("Failed login for user: " + req.body.username + " (reason: " + error.message + ")");
+  .then(text => {
+    console.log(text);
+    res.render('home');
+  })
+  .catch(error => {
     console.error(error);
   });
 });
@@ -60,21 +90,25 @@ router.get('/recipe', (req, res) => {
 // });
 
 router.get('/v/:user/:recipe', (req, res) => {
-  instance.get('/view/' + req.params.user + '/' + req.params.recipe)
-  .then(function(response) {
-    res.render('view_recipe', {title: response.data.meta.title, ingredients: response.data.ingredients, recipe: response.data.recipe});
+  fetch(api_url + 'view/' + req.params.user + '/' + req.params.recipe, {
+    method: 'GET',
+    agent: httpsAgent,
+    credentials: 'include',
+    headers: {
+      'X-CSRFToken': req.cookies['csrftoken']
+    }
+  })
+  .then(response => {
+    // console.log(response);
+    return response.json()
+  })
+  .then(json => {
+    res.render('view_recipe', {title: json.meta.title, ingredients: json.ingredients, recipe: json.recipe});
   })
   .catch(function(error) {
     console.error("Error: " + error.message);
+    console.error(error);
   });
 });
-
-function setJwtCookie(res, cookieName, cookieValue) {
-  res.cookie(cookieName, cookieValue, {
-    secure: true,
-    httpOnly: true,
-    sameSite: 'lax'
-  });
-}
 
 module.exports = router;

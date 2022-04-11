@@ -11,6 +11,9 @@ from rest_framework.views import APIView
 import os
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 @login_required
 def recipe(request):
@@ -63,9 +66,22 @@ class MyRecipesView(APIView):
       queryset.append(clprocess(os.path.join(user_path, filename)))
     return Response(queryset)
 
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_exempt, name='get')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='get')
 class RecipeView(APIView):
-  # permission_classes = [IsAuthenticated]
+  authentication_classes = [SessionAuthentication]
+  permission_classes = [IsAuthenticated]
   
+  @csrf_exempt
+  @ensure_csrf_cookie
   def get(self, request, *args, **kw):
+    import pprint
+    pprint.pprint(request.META)
     return Response(clprocess(f"./data/recipes/{kw['user']}/{kw['recipe']}.cook"))
 
+def recipe_view(request, user, recipe):
+  import pprint
+  pprint.pprint(request.META)
+  pprint.pprint(request.session.session_key)

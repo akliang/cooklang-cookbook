@@ -47,9 +47,13 @@ class ApiLogin(APIView):
 
     # at this point, you are either logged in or not
     if request.user.is_authenticated:
-      return Response(user)
+      response = HttpResponse(f"Successful login for {form.cleaned_data['username']}.")
+      # response['Access-Control-Allow-Origin'] = '*'
+      return response
     else:
-      return HttpResponse("NOPE")
+      # TODO: enable logging
+      response = HttpResponse("Login failed.")
+      return response
 
     
 def logout(request):
@@ -75,3 +79,22 @@ def register(request):
     form = RegisterForm()
     return render(request=request, template_name="api/register.html", context={"form":form})
 
+
+
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'username': user.username,
+        })
