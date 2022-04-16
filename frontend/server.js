@@ -24,5 +24,7 @@ app.set('view engine', '.hbs');
 app.set('views', './views');
 
 // routes
-const router = require('./router');
-app.use(router);
+const router_auth = require('./router_auth');
+const router_main = require('./router_main');
+app.use(router_auth);
+app.use(router_main);
