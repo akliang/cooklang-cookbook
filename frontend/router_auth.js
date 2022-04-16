@@ -30,7 +30,11 @@ router.post('/login', (req, res) => {
     }
   })
   .then(json => {
-    res.cookie('apikey', json['token']);
+    res.cookie('apikey', json['token'], {
+      sameSite: 'strict',
+      httpOnly: false,
+      secure: true,
+    });
     if (req.query.next) {
       res.redirect(req.query.next);
     } else {
