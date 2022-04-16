@@ -1,4 +1,4 @@
-# Cookbook - a recipe cookbook based on the cooklang markup language
+# Cookbook - based on the cooklang markup language
 
 https://cooklang.org/
 
