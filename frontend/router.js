@@ -5,17 +5,15 @@ const fetch = require('node-fetch');
 
 const api_url = "https://cookbook.albertliang.xyz/api";
 
-// TODO: move this up to server.js and pass as object input to router.js
+// const https = require('https');
+// const httpsAgent = new https.Agent({
+//   rejectUnauthorized: false
+// });
 
-const https = require('https');
-const httpsAgent = new https.Agent({
-  rejectUnauthorized: false
-});
-
-// router
+// home view (my recipes)
 router.get('/', (req, res) => {
   fetch(api_url + '/view/', {
-    agent: httpsAgent,
+    // agent: httpsAgent,
     headers: {
       "Authorization": "token " + req.cookies['apikey']
     }
@@ -46,7 +44,7 @@ router.post('/login', (req, res) => {
       'username': req.body.username,
       'password': req.body.password
     }),
-    agent: httpsAgent,
+    // agent: httpsAgent,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     }
@@ -79,7 +77,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/v/:user/:recipe', (req, res) => {
   fetch(api_url + '/view/' + req.params.user + '/' + req.params.recipe, {
-    agent: httpsAgent,
+    // agent: httpsAgent,
   })
   .then(response => {
     return response.json()
