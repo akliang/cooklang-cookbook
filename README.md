@@ -1,22 +1,43 @@
 # cooklang-cookbook
 
-# TODO:
-- fix cooklang tests
-- base template
-- image uploading
+# User story
+- Login
+- Logout
+- Get redirected to login with proper "next" param
+- Register account
+- Delete account?
+- View a recipe
+- View all my recipes
+- Share a recipe
+- Save a recipe
+- View saved recipes
+- Add a recipe
+- Edit a recipe
+- Delete a recipe
+- Upload images
+
+# Todo
+- functionalize login redirect
+- improve apikey cookie security (samesite)
+- set up base handlebars template
+- set up Express logging
+- fix "catch" logging in Express
+- 404 page?
+- set up Django logging
+- flash messages
+
+# Wishlist
 - wysiwyg
 - auto ingredient highlighting
 - auto-preview recipe
-- DRF
-- add 404 page to express
-- logout
-- login failure message
 - image server?
 - coverage
 - separate server/env for testing?
 
-# Testing TODO:
-- edit recipe
+# Testing todo
+- selenium test for frontend
+- fix cooklang tests
+- refactor api tests for DRF style endpoints
 
 # Development
 ```
@@ -37,5 +58,3 @@ dc build --no-cache frontend
 - fry pan: <a href="https://www.flaticon.com/free-icons/cooking" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
 - list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
 - person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
-- checkmark: <a href="https://www.flaticon.com/free-icons/correct" title="correct icons">Correct icons created by Freepik - Flaticon</a>
-- fancy hr: https://codepen.io/Moiety/pen/eYarPq
