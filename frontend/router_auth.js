@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const qs = require('qs');
 const fetch = require('node-fetch');
+const C = require('./constants');
 
-const api_url = "https://cookbook.albertliang.xyz/api";
-
+// login page
 router.get('/login', (req, res) => {
   res.render('login');
 });
 
+// login to API backend
 router.post('/login', (req, res) => {
-  fetch(api_url + '/api_login/', {
+  fetch(C.api_login_url, {
     method: 'POST',
     body: qs.stringify({
       'username': req.body.username,
@@ -41,11 +42,10 @@ router.post('/login', (req, res) => {
   });
 });
 
+// logout
 router.get('/logout', (req, res) => {
   res.clearCookie('apikey');
   res.redirect('login');
 });
-
-
 
 module.exports = router;

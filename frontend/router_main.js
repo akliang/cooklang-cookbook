@@ -2,34 +2,33 @@ const express = require('express');
 const router = express.Router();
 const qs = require('qs');
 const fetch = require('node-fetch');
-
-const api_url = "https://cookbook.albertliang.xyz/api";
+const C = require('./constants');
 
 // home view (my recipes)
 router.get('/', (req, res) => {
-  fetch(api_url + '/view/', {
+  fetch(C.api_myrecipes_url, {
     headers: {
       "Authorization": "token " + req.cookies['apikey']
     }
   })
   .then(response => {
-    if (!response.ok) {
-      res.redirect('/login?next=/');
-    } else {
+    if (response.ok) {
       return response.json();
+    } else {
+      res.redirect('/login');
     }
   })
   .then(json => {
     res.render('home', {recipes: json});
   })
   .catch(error => {
-    console.error("Error (home): " + error);
+    console.error("Error (home): " + error.message);
   });
 });
 
+// view recipe
 router.get('/v/:user/:recipe', (req, res) => {
-  fetch(api_url + '/view/' + req.params.user + '/' + req.params.recipe, {
-  })
+  fetch(C.api_myrecipes_url + req.params.user + '/' + req.params.recipe)
   .then(response => {
     return response.json()
   })
@@ -37,8 +36,7 @@ router.get('/v/:user/:recipe', (req, res) => {
     res.render('view_recipe', {title: json.meta.title, ingredients: json.ingredients, recipe: json.recipe});
   })
   .catch(function(error) {
-    console.error("Error: " + error.message);
-    console.error(error);
+    console.error("Error (view-recipe): " + error.message);
   });
 });
 
