@@ -2,7 +2,7 @@ import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import pytest
 
-from api.helpers import cooklang_processor as c
+from api.helpers.cooklang import cooklang_processor as c
 
 @pytest.fixture
 def recipe(tmp_path):
