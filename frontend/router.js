@@ -2,32 +2,37 @@ const express = require('express');
 const router = express.Router();
 const qs = require('qs');
 const fetch = require('node-fetch');
-var setCookie = require('set-cookie-parser');
 
-const api_url = "https://cookbook.albertliang.xyz/api/";
+const api_url = "https://cookbook.albertliang.xyz/api";
 
 // TODO: move this up to server.js and pass as object input to router.js
-// axios setup
+
 const https = require('https');
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false
 });
-// const axios = require('axios');
-// const instance = axios.create({
-//   baseURL: 'https://cookbook.albertliang.xyz/api/',
-//   xsrfHeaderName: "X-CSRFTOKEN",
-//   xsrfCookieName: "csrftoken",
-//   withCredentials: true,
-//   // TODO: remove this when real SSL is in
-//   httpsAgent: new https.Agent({  
-//     rejectUnauthorized: false
-//   })
-//   // TODO: set-crsf endpoint
-// });
 
 // router
 router.get('/', (req, res) => {
-  res.render('home');
+  fetch(api_url + '/view/', {
+    agent: httpsAgent,
+    headers: {
+      "Authorization": "token " + req.cookies['apikey']
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      res.redirect('/login?next=/');
+    } else {
+      return response.json();
+    }
+  })
+  .then(json => {
+    res.render('home', {recipes: json});
+  })
+  .catch(error => {
+    console.error("Error (home): " + error);
+  });
 });
 
 router.get('/login', (req, res) => {
@@ -35,71 +40,48 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  fetch('https://cookbook.albertliang.xyz/api/api_login/', {
+  fetch(api_url + '/api_login/', {
     method: 'POST',
     body: qs.stringify({
       'username': req.body.username,
       'password': req.body.password
     }),
     agent: httpsAgent,
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Access-Control-Allow-Origin': 'https://albertliang.xyz:8003'
     }
   })
-  .then(response => { 
-    const cookies = setCookie.parse(response.headers.raw()['set-cookie'], {
-      decodeValues: true,
-    });
-    cookies.forEach(cookie => {
-      res.cookie(cookie['name'], cookie['value'], {
-        expires: cookie['expires'],
-        httpOnly: cookie['httpOnly'],
-        maxAge: cookie['maxAge'],
-        path: cookie['path'],
-        sameSite: cookie['sameSite'],
-        secure: cookie['secure'],
-      })
-    });
-    return response.text();
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      // TODO
+      console.error("Error: " + response)
+    }
   })
-  .then(text => {
-    console.log(text);
-    res.render('home');
+  .then(json => {
+    res.cookie('apikey', json['token']);
+    if (req.query.next) {
+      res.redirect(req.query.next);
+    } else {
+      res.redirect('/');
+    }
   })
   .catch(error => {
     console.error(error);
   });
 });
 
-router.get('/recipe', (req, res) => {
-  res.render('add_recipe');
+router.get('/logout', (req, res) => {
+  res.clearCookie('apikey');
+  res.redirect('login');
 });
 
-// router.get('/v/:user', (req, res) => {
-//   instance.get('/v2/' + req.params.user)
-//   .then(function(response) {
-//     console.log(response.data);
-//     res.render('view_recipe', {data: response.data});
-//   })
-//   .catch(function(error) {
-//     console.error(error);
-//   });
-//   // res.render('view_recipe');
-// });
-
 router.get('/v/:user/:recipe', (req, res) => {
-  fetch(api_url + 'view/' + req.params.user + '/' + req.params.recipe, {
-    method: 'GET',
+  fetch(api_url + '/view/' + req.params.user + '/' + req.params.recipe, {
     agent: httpsAgent,
-    credentials: 'include',
-    headers: {
-      'X-CSRFToken': req.cookies['csrftoken']
-    }
   })
   .then(response => {
-    // console.log(response);
     return response.json()
   })
   .then(json => {
