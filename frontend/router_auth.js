@@ -3,6 +3,7 @@ const router = express.Router();
 const qs = require('qs');
 const fetch = require('node-fetch');
 const C = require('./constants');
+const logger = require('./logger');
 
 // login page
 router.get('/login', (req, res) => {
@@ -25,8 +26,8 @@ router.post('/login', (req, res) => {
     if (response.ok) {
       return response.json();
     } else {
-      // TODO
-      console.error("Error: " + response)
+      res.render('login', {msg: "Invalid login attempt."});
+      throw new Error("Login attempt failed for user: " + req.body.username);
     }
   })
   .then(json => {
@@ -42,7 +43,7 @@ router.post('/login', (req, res) => {
     }
   })
   .catch(error => {
-    console.error(error);
+    logger.error("(Login-post) " + error.message);
   });
 });
 
