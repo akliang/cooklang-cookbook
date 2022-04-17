@@ -1,15 +1,15 @@
-# Cookbook - based on the cooklang markup language
+# Cookbook - A cooklang recipe book
 
 https://cooklang.org/
 
 ## User story
 - Login
-- Logout
-- Get redirected to login with proper "next" param
+- (done) Logout
+- (done) Get redirected to login with proper "next" param
 - Register account
 - Delete account?
-- View a recipe
-- View all my recipes
+- (done) View a recipe
+- (done) View all my recipes
 - Share a recipe
 - Save a recipe
 - View saved recipes
@@ -19,14 +19,10 @@ https://cooklang.org/
 - Upload images
 
 ## Todo
-- functionalize login redirect
-- improve apikey cookie security (samesite)
-- set up base handlebars template
-- set up Express logging
-- fix "catch" logging in Express
-- 404 page?
+- redirect http400 to its own logging file
+- clean up logging files?  (access.log vs console.log and an "all" file)
 - set up Django logging
-- flash messages
+- flash messages... maybe? yes, probably need to for the "invalid api key" redirect
 
 ## Wishlist
 - wysiwyg
