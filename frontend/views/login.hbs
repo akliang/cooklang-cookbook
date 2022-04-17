@@ -1,6 +1,10 @@
 {{> logo}}
 
 <div class="w-2/3 mx-auto">
+  <div class="p-3 text-sm text-red-400">
+      {{msg}}
+  </div>
+    
   <form action="/login" method="post">
     <div class="w-full">
       <input type="text" class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="username" placeholder="Username" autofocus>
