@@ -2,7 +2,7 @@
 {{> logo}}
 
 <div class="w-2/3 mx-auto">
-  <form>
+  <form action="/add" method="post">
     <div class="w-full mb-2">
       <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" placeholder="Title" autofocus>
     </div>
@@ -12,11 +12,13 @@
     </div>
 
     <div class="grid grid-cols-3 gap-3 w-full mx-auto">
-      <div>
-        <input class="w-full bg-red-100 hover:bg-red-200 p-3 rounded-md" type="button" value="X">
-      </div>
+      <a href="/">
+        <div class="w-full bg-red-100 hover:bg-red-200 p-3 rounded-md">
+          X
+        </div>
+      </a>
       <div class="col-span-2">
-        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md" type="button" value="Save">
+        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md" type="submit" value="Save">
       </div>
     </div>
   </form>
