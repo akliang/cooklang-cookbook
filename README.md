@@ -23,6 +23,10 @@ https://cooklang.org/
 - clean up logging files?  (access.log vs console.log and an "all" file)
 - set up Django logging
 - flash messages... maybe? yes, probably need to for the "invalid api key" redirect
+- refactor all get paths to "/<regex>" to wrap in logged-in
+- wrap all API calls to auto-append header?
+- make login name case insensitive
+- figure out where the "stir-fry-string-beans" call is coming from
 
 ## Wishlist
 - wysiwyg
@@ -31,6 +35,7 @@ https://cooklang.org/
 - image server?
 - coverage
 - separate server/env for testing?
+- AI generate thumbnail image
 
 ## Testing todo
 - selenium test for frontend
@@ -58,6 +63,6 @@ make up
 
 
 ## Credits
-- fry pan: <a href="https://www.flaticon.com/free-icons/cooking" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
+- fry pan: <a href="https://www.flaticon.com/free-icon/frying-pan_4329602" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
 - list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
 - person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
