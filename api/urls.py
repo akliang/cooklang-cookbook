@@ -15,4 +15,5 @@ urlpatterns = [
   path('view/<str:user>/<str:recipe>', views.RecipeView.as_view(), name='RecipeView'),
   # path('view/<str:user>/<str:recipe>', views.recipe_view, name='temp'),
   path('view/', views.MyRecipes.as_view(), name='MyRecipes'),
+  path('add/', views.AddRecipe.as_view(), name='Addrecipe'),
 ]
