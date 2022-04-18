@@ -4,6 +4,7 @@ const qs = require('qs');
 const fetch = require('node-fetch');
 const C = require('./constants');
 const logger = require('./logger');
+const h = require('./helpers');
 
 // home view (my recipes)
 router.get('/', (req, res) => {
@@ -51,6 +52,14 @@ router.get('/v/:user/:recipe', (req, res) => {
   .catch(error => {
     logger.error("(View-recipe) " + error.message);
   });
+});
+
+router.get('/add', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/add');
+  } else {
+    res.render('add_recipe');
+  }
 });
 
 module.exports = router;
