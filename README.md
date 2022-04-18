@@ -3,7 +3,7 @@
 https://cooklang.org/
 
 ## User story
-- Login
+- (done) Login
 - (done) Logout
 - (done) Get redirected to login with proper "next" param
 - Register account
@@ -43,6 +43,11 @@ https://cooklang.org/
 dc run -u root frontend npm install <package_name>
 # have to run build with --no-cache to pick up the updated package.json
 dc build --no-cache frontend
+# sometimes docker-compose up uses the old container or image, so prune everything
+docker container prune
+docker image prune
+# finally, spin up the project again
+make up
 ```
 
 ## Useful links:
