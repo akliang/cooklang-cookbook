@@ -22,6 +22,9 @@ class LoginTokenAuth(ObtainAuthToken):
 # helper function to convert API key into username
 def lookup_user_by_api(request):
   auth = get_authorization_header(request).split()
-  api_key = auth[1].decode()
-  token = Token.objects.get(key=api_key)
-  return token.user
+  if auth:
+    api_key = auth[1].decode()
+    token = Token.objects.get(key=api_key)
+    return token.user
+  else:
+    return None
