@@ -1,8 +1,8 @@
 import re
 
-def write_formdata_to_cookfile(request, cleaned_data):
+def write_formdata_to_cookfile(user, cleaned_data):
   filename = cleaned_data['title'].replace(" ","-").lower()
-  with open(f"./data/recipes/{request.user.username}/{filename}.cook", "w") as file:
+  with open(f"./data/recipes/{user.username}/{filename}.cook", "w") as file:
     file.write(f">> title: {cleaned_data['title']}\n")
     file.write(f">> tags: {cleaned_data['tags']}\n")
     file.write(cleaned_data['recipe'])
