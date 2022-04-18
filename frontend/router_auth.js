@@ -7,11 +7,11 @@ const logger = require('./logger');
 
 // login page
 router.get('/login', (req, res) => {
-  res.render('login');
+  res.render('login', {next: req.query.next});
 });
 
 // login to API backend
-router.post('/login', (req, res) => {
+router.post('/login', (req, res) => { 
   fetch(C.api_login_url, {
     method: 'POST',
     body: qs.stringify({
@@ -36,8 +36,8 @@ router.post('/login', (req, res) => {
       httpOnly: false,
       secure: true,
     });
-    if (req.query.next) {
-      res.redirect(req.query.next);
+    if (req.body.next) {
+      res.redirect(req.body.next);
     } else {
       res.redirect('/');
     }
