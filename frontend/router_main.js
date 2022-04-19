@@ -11,7 +11,11 @@ const h = require('./helpers');
 //
 // view recipe
 router.get('/v/:user/:recipe', (req, res) => {
-  fetch(C.api_myrecipes_url + req.params.user + '/' + req.params.recipe)
+  fetch(C.api_viewrecipes_url + req.params.user + '/' + req.params.recipe, {
+    headers: {
+      "Authorization": "token " + req.cookies['apikey'],
+    }
+  })
   .then(response => {
     if (response.ok) {
       return response.json()
@@ -21,7 +25,7 @@ router.get('/v/:user/:recipe', (req, res) => {
     }
   })
   .then(json => {
-    res.render('view_recipe', {title: json.meta.title, ingredients: json.ingredients, recipe: json.recipe});
+    res.render('view_recipe', {title: json.data.meta.title, ingredients: json.data.ingredients, recipe: json.data.recipe, edit: json.edit});
   })
   .catch(error => {
     logger.error("(View-recipe) " + error.message);
@@ -37,7 +41,7 @@ router.get('/', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login');
   } else {
-    fetch(C.api_myrecipes_url, {
+    fetch(C.api_viewrecipes_url, {
       headers: {
         "Authorization": "token " + req.cookies['apikey']
       }
@@ -101,6 +105,59 @@ router.post('/add', (req, res) => {
     })
     .catch(error => {
       logger.error("(Add recipe) " + error.message);
+    });
+  }
+});
+
+// edit recipe (post)
+router.post('/edit', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login');
+  } else {
+    fetch(C.api_viewrecipesbytoken_url + req.body.recipe, {
+      headers: {
+        "Authorization": "token " + req.cookies['apikey'],
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json()
+      } else {
+        res.redirect('/');
+        throw new Error(response.statusText + " - recipe does not exists");
+      }
+    })
+    .then(json => {
+      res.render('add_recipe', {title: json.meta.title, recipe: json.recipe, edit: true});
+    })
+    .catch(error => {
+      logger.error("(Edit-recipe) " + error.message);
+    });
+  }
+});
+
+// delete recipe (post)
+router.post('/delete', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login');
+  } else {
+    fetch(C.api_deleterecipe_url + req.body.recipe, {
+      method: 'POST',
+      headers: {
+        "Authorization": "token " + req.cookies['apikey'],
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        res.redirect('/');
+      } else {
+        res.redirect('/');
+        throw new Error(response.statusText + " - recipe does not exists");
+      }
+    })
+    .catch(error => {
+      logger.error("(Delete-recipe) " + error.message);
     });
   }
 });
