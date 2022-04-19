@@ -10,42 +10,46 @@ def write_formdata_to_cookfile(user, cleaned_data):
 
 
 def cooklang_processor(recipe):
-  recipe_file = open(recipe, 'r')
+  try:
+    recipe_file = open(recipe, 'r')
 
-  # todo: comments
+    # todo: comments
 
-  ingredients = []
-  cookware = []
-  timers = []
-  meta = {}
-  recipe = []
-  for line in recipe_file:
-    ingredients += _cl_do_regex("@", line)
-    cookware += _cl_do_regex("#", line)
-    timers += _cl_do_regex("~", line)
-    if data := _cl_do_meta(line):
-      meta[data[0]] = data[1]
-    else:
-      recipe.append(_clean_line(line))
+    ingredients = []
+    cookware = []
+    timers = []
+    meta = {}
+    recipe = []
+    for line in recipe_file:
+      ingredients += _cl_do_regex("@", line)
+      cookware += _cl_do_regex("#", line)
+      timers += _cl_do_regex("~", line)
+      if data := _cl_do_meta(line):
+        meta[data[0]] = data[1]
+      else:
+        recipe.append(_clean_line(line))
 
-  # remove all None elemenets from lists
-  ingredients = list(filter(None, ingredients))
-  cookware = list(filter(None, cookware))
-  timers = list(filter(None, timers))
+    # remove all None elemenets from lists
+    ingredients = list(filter(None, ingredients))
+    cookware = list(filter(None, cookware))
+    timers = list(filter(None, timers))
 
-  # delete empty rows
-  recipe = [i for i in recipe if i]
+    # delete empty rows
+    recipe = [i for i in recipe if i]
 
-  # convert ingredient list to dictionary
-  ingredients = {i[0]: i[1] for i in ingredients}
+    # convert ingredient list to dictionary
+    ingredients = {i[0]: i[1] for i in ingredients}
 
-  return {
-    'ingredients': ingredients,
-    'cookware': cookware,
-    'timers': timers,
-    'meta': meta,
-    'recipe': recipe,
-  }
+    return {
+      'ingredients': ingredients,
+      'cookware': cookware,
+      'timers': timers,
+      'meta': meta,
+      'recipe': recipe,
+    }
+  except:
+    return None
+
 
 
 def _cl_do_regex(symbol, line):
