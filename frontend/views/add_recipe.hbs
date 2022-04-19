@@ -4,12 +4,21 @@
 <div class="w-2/3 mx-auto">
   <form action="/add" method="post">
     <div class="w-full mb-2">
-      <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" placeholder="Title" autofocus>
+      <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" placeholder="Title" value="{{title}}" autofocus>
     </div>
 
     <div class="w-full mb-2">
-      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12></textarea>
+      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12>
+{{#each recipe}}
+{{this}}
+
+{{/each}}
+      </textarea>
     </div>
+
+    {{#if edit}}
+      <input type="hidden" name="edit" value="true">
+    {{/if}}
 
     <div class="grid grid-cols-3 gap-3 w-full mx-auto">
       <a href="/">
