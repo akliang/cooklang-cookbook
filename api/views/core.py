@@ -60,9 +60,19 @@ from rest_framework.authentication import get_authorization_header
 #   return render(request=request, template_name="api/view.html", context={'data': data, 'edit': edit})
 
 
+class GetReceipeWithToken(APIView):
+  def get(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+    return Response(clprocess(f"./data/recipes/{user.username}/{kw['recipe']}.cook"))
+
 class RecipeView(APIView):
   def get(self, request, *args, **kw):
-    return Response(clprocess(f"./data/recipes/{kw['user']}/{kw['recipe']}.cook"))
+    user = lookup_user_by_api(request)
+    if user and user.username == kw['user']:
+      edit = kw['recipe']
+    else:
+      edit = False
+    return Response({'data': clprocess(f"./data/recipes/{kw['user']}/{kw['recipe']}.cook"), 'edit': edit})
 
 class MyRecipes(APIView):
   authentication_classes = [TokenAuthentication]
@@ -97,3 +107,21 @@ class AddRecipe(APIView):
       }, status=status.HTTP_201_CREATED)
     else:
       return Response(form.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DeleteRecipe(APIView):
+  authentication_classes = [TokenAuthentication]
+  permission_classes = [IsAuthenticated]
+
+  def post(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+
+    if user:
+      path_to_file = f"./data/recipes/{user.username}/{kw['recipe']}.cook"
+      if os.path.exists(path_to_file):
+        os.remove(path_to_file)
+        return Response(True)
+      else:
+        # TODO make this return something meaningful for logging
+        return Response(None)
+    else:
+      return Response(None)
