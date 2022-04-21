@@ -43,7 +43,7 @@ router.post('/login', (req, res) => {
     }
   })
   .catch(error => {
-    logger.error("(Login-post) " + error.message);
+    logger.error("(Login) " + error.message);
   });
 });
 
@@ -51,6 +51,43 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   res.clearCookie('apikey');
   res.redirect('login');
+});
+
+// register (get)
+router.get('/register', (req, res) => {
+  res.render('register');
+});
+
+// register (post)
+router.post('/register', (req, res) => {
+  fetch(C.api_register_url, {
+    method: 'POST',
+    body: qs.stringify({
+      'email': req.body.email,
+      'username': req.body.username,
+      'password1': req.body.password1,
+      'password2': req.body.password2
+    }),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      // TODO: add "account created successfully" message
+      res.redirect('/login');
+    } else {
+      return response.json()
+    }
+  })
+  .then(json => {
+    res.render('register', {msg: json});
+    throw new Error(json);
+  })
+
+  .catch(error => {
+    logger.error("(Register) " + error.message);
+  });
 });
 
 module.exports = router;
