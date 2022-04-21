@@ -5,6 +5,7 @@ from api import views
 urlpatterns = [
   # path('', views.index, name='index'),
   path('api_login/', views.LoginTokenAuth.as_view(), name='api_login'),
+  path('api_register/', views.RegisterAccount.as_view(), name='api_register'),
   # path('login/', views.login, name='login'),
   # path('api_login/', views.ApiLogin.as_view(), name='api_login'),
   # path('logout/', views.logout, name='logout'),
