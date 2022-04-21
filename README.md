@@ -7,18 +7,25 @@ https://cooklang.org/
 - (done) Logout
 - (done) Get redirected to login with proper "next" param
 - Register account
+- Change password (and API token invalidation on pw change)
 - Delete account?
 - (done) View a recipe
 - (done) View all my recipes
 - Share a recipe
 - Save a recipe
 - View saved recipes
-- Add a recipe
-- Edit a recipe
-- Delete a recipe
+- (done) Add a recipe
+- (done) Edit a recipe
+- (done) Delete a recipe
 - Upload images
 
 ## Todo
+- move recipes to database
+- flash messages
+
+
+
+
 - redirect http400 to its own logging file
 - clean up logging files?  (access.log vs console.log and an "all" file)
 - set up Django logging
@@ -27,6 +34,18 @@ https://cooklang.org/
 - wrap all API calls to auto-append header?
 - make login name case insensitive
 - figure out where the "stir-fry-string-beans" call is coming from
+- try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
+- add API key to error logging on frontend
+- make data/recipe/ path DRYer (at the very least make the first 2 parts a constant)
+- add cooklang markup to "edit recipe"
+- add delete recipe flash message
+- change "back" button on edit recipe based on context
+- check cursor-pointer for all buttons
+- fix login page register button
+- api_login: what about invalid logins
+- api_login: use the "created" object
+- figure out all nav paths (back, cancel, what helpful buttons on each page)
+- move recipes to database?
 
 ## Wishlist
 - wysiwyg
@@ -36,6 +55,7 @@ https://cooklang.org/
 - coverage
 - separate server/env for testing?
 - AI generate thumbnail image
+- decrease number of API calls (cache all "myrecipes" to local, preferrably all saved recipes too)
 
 ## Testing todo
 - selenium test for frontend
@@ -60,6 +80,7 @@ make up
 - https://waelyasmina.medium.com/a-guide-into-using-handlebars-with-your-express-js-application-22b944443b65
 - https://forum.djangoproject.com/t/how-to-authenticate-django-rest-framework-api-calls-from-a-vue-js-client-using-session-authentication-and-httponly-cookies/5422
 - https://stackoverflow.com/questions/70113882/axios-how-exactly-to-preserve-session-after-successful-authorization-and-send
+- https://stackoverflow.com/questions/28100979/button-does-not-function-on-the-first-click
 
 
 ## Credits
