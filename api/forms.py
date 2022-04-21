@@ -1,44 +1,30 @@
 from django import forms
 from django.contrib.auth.models import User
-from api.models import Chef
+from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 
-# class RegisterForm(forms.Form):
-#   username = forms.CharField(
-#     max_length=255,
-#     widget=forms.TextInput(attrs={'placeholder': 'Username'}),
-#     required=True,
-#   )
+def validate_email(value):
+    if User.objects.filter(email = value).exists():
+      # note: the params struct is to keep with best-practice for ValidationError per Django documentation
+      raise ValidationError((f"Email {value} is taken."), params = {'value': value})  
 
-#   email = forms.EmailField(
-#     max_length=255,
-#     widget=forms.EmailInput(attrs={'placeholder': 'Email'}),
-#     required=True,
-#   )
+class ChefCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True, validators = [validate_email])
 
-#   password = forms.CharField(
-#     max_length=255,
-#     widget=forms.PasswordInput(attrs={'placeholder': 'Password'}),
-#     required=True
-#   )
+    class Meta:
+        model = User
+        fields = ("username", "email", "password1", "password2")
 
-#   password2 = forms.CharField(
-#     max_length=255,
-#     widget=forms.PasswordInput(attrs={'placeholder': 'Confirm password'}),
-#     required=True
-#   )
+    def save(self, commit=True):
+        user = super(ChefCreationForm, self).save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
 
-#   def save(self):
-    # user = User.objects.create_user(username=self.cleaned_data['username'], password=self.cleaned_data['password'])
-    # Chef.objects.create(user=user, email=self.cleaned_data['email'])
-    # return user
 
 class RecipeForm(forms.Form):
-  title = forms.CharField(
-    max_length=255
-  )
-  tags = forms.CharField(
-    max_length=255,
-    required=False
-  )
+  title = forms.CharField(max_length=255)
+  tags = forms.CharField(max_length=255, required=False)
   recipe = forms.CharField()
 
