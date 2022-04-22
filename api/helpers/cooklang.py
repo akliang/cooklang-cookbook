@@ -9,18 +9,14 @@ def write_formdata_to_cookfile(user, cleaned_data):
   return filename
 
 
-def cooklang_processor(recipe):
+def cooklang_processor(raw_recipe):
   try:
-    recipe_file = open(recipe, 'r')
-
-    # todo: comments
-
     ingredients = []
     cookware = []
     timers = []
     meta = {}
     recipe = []
-    for line in recipe_file:
+    for line in raw_recipe.splitlines():
       ingredients += _cl_do_regex("@", line)
       cookware += _cl_do_regex("#", line)
       timers += _cl_do_regex("~", line)
