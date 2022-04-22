@@ -13,10 +13,10 @@ urlpatterns = [
   # path('recipe/', views.recipe, name='recipe'),
   # path('v/<str:username>/<str:filename>', views.view, name='view'),
   # path('view/<str:user>/', views.MyRecipesView.as_view(), name='MyRecipesView'),
-  path('view/<str:user>/<str:recipe>', views.RecipeView.as_view(), name='RecipeView'),
+  path('view/<str:username>/<str:slug>', views.RecipeView.as_view(), name='RecipeView'),
   path('view_by_token/<str:recipe>', views.GetReceipeWithToken.as_view(), name='GetRecipeWithToken'),
   # path('view/<str:user>/<str:recipe>', views.recipe_view, name='temp'),
   path('view/', views.MyRecipes.as_view(), name='MyRecipes'),
   path('add/', views.AddRecipe.as_view(), name='Addrecipe'),
-  path('delete/<str:recipe>', views.DeleteRecipe.as_view(), name='DeleteRecipe'),
+  path('delete/<str:slug>', views.DeleteRecipe.as_view(), name='DeleteRecipe'),
 ]
