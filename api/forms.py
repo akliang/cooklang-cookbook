@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+from api.models import Recipe
 
 def validate_email(value):
     if User.objects.filter(email = value).exists():
@@ -23,8 +24,16 @@ class ChefCreationForm(UserCreationForm):
         return user
 
 
-class RecipeForm(forms.Form):
-  title = forms.CharField(max_length=255)
-  tags = forms.CharField(max_length=255, required=False)
-  recipe = forms.CharField()
+# class RecipeForm(forms.Form):
+#   title = forms.CharField(max_length=255)
+#   tags = forms.CharField(max_length=255, required=False)
+#   recipe = forms.CharField()
 
+class RecipeForm(forms.ModelForm):
+  class Meta:
+    model = Recipe
+    fields = ['title', 'tags', 'recipe']
+
+  def __init__(self, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)
+        self.fields['tags'].required = False
