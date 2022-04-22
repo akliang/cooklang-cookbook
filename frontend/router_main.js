@@ -10,8 +10,8 @@ const h = require('./helpers');
 // UNPROTECTED ROUTES
 //
 // view recipe
-router.get('/v/:user/:recipe', (req, res) => {
-  fetch(C.api_viewrecipes_url + req.params.user + '/' + req.params.recipe, {
+router.get('/v/:username/:slug', (req, res) => {
+  fetch(C.api_viewrecipes_url + req.params.username + '/' + req.params.slug, {
     headers: {
       "Authorization": "token " + req.cookies['apikey'],
     }
@@ -25,7 +25,7 @@ router.get('/v/:user/:recipe', (req, res) => {
     }
   })
   .then(json => {
-    res.render('view_recipe', {title: json.data.meta.title, ingredients: json.data.ingredients, recipe: json.data.recipe, edit: json.edit});
+    res.render('view_recipe', {title: json.title, ingredients: json.ingredients, recipe: json.recipe, edit: json.edit});
   })
   .catch(error => {
     logger.error("(View-recipe) " + error.message);
@@ -97,11 +97,7 @@ router.post('/add', (req, res) => {
       }
     })
     .then(json => {
-    //   file.write(f">> title: {cleaned_data['title']}\n")
-    // file.write(f">> tags: {cleaned_data['tags']}\n")
-    // file.write(cleaned_data['recipe'])
-      console.log(json);
-      res.redirect('/v/' + json.username + '/' + json.filename);
+      res.redirect('/v/' + json.username + '/' + json.slug);
     })
     .catch(error => {
       logger.error("(Add recipe) " + error.message);
@@ -141,7 +137,7 @@ router.post('/delete', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login');
   } else {
-    fetch(C.api_deleterecipe_url + req.body.recipe, {
+    fetch(C.api_deleterecipe_url + req.body.slug, {
       method: 'POST',
       headers: {
         "Authorization": "token " + req.cookies['apikey'],
