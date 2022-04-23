@@ -17,15 +17,10 @@ router.get('/v/:username/:slug', (req, res) => {
     }
   })
   .then(response => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      res.redirect('/');
-      throw new Error(response.statusText + " - recipe does not exists");
-    }
+    return response.json()
   })
   .then(json => {
-    res.render('view_recipe', {title: json.title, ingredients: json.ingredients, recipe: json.recipe, edit: json.edit});
+    res.render('view_recipe', {title: json.title, ingredients: json.ingredients, recipe: json.recipe, edit: json.edit, username: req.params.username, slug: req.params.slug});
   })
   .catch(error => {
     logger.error("(View-recipe) " + error.message);
@@ -85,7 +80,8 @@ router.post('/add', (req, res) => {
       },
       body: qs.stringify({
         'title': req.body.title,
-        'recipe': req.body.recipe
+        'recipe': req.body.recipe,
+        'edit': req.body.edit,
       })
     })
     .then(response => {
@@ -106,11 +102,12 @@ router.post('/add', (req, res) => {
 });
 
 // edit recipe (post)
-router.post('/edit', (req, res) => {
+router.post('/edit/:username/:slug', (req, res) => {
   if (!h.loggedIn(req)) {
+    // TODO: make sure the logged in user is actually authorized to edit this recipe
     res.redirect('/login');
   } else {
-    fetch(C.api_viewrecipesbytoken_url + req.body.recipe, {
+    fetch(C.api_viewrecipesbytoken_url + req.params.slug, {
       headers: {
         "Authorization": "token " + req.cookies['apikey'],
       }
@@ -124,7 +121,7 @@ router.post('/edit', (req, res) => {
       }
     })
     .then(json => {
-      res.render('add_recipe', {title: json.meta.title, recipe: json.recipe, edit: true});
+      res.render('add_recipe', {title: json.title, recipe: json.recipe, slug: json.slug, edit: true});
     })
     .catch(error => {
       logger.error("(Edit-recipe) " + error.message);
