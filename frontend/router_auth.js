@@ -76,6 +76,8 @@ router.post('/register', (req, res) => {
     if (response.ok) {
       // TODO: add "account created successfully" message
       res.redirect('/login');
+      // break the promise chain
+      return { then: function() {} };
     } else {
       return response.json()
     }
@@ -84,7 +86,6 @@ router.post('/register', (req, res) => {
     res.render('register', {msg: json});
     throw new Error(json);
   })
-
   .catch(error => {
     logger.error("(Register) " + error.message);
   });
