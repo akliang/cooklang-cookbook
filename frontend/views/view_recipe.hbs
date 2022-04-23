@@ -4,13 +4,20 @@
 
 <div class="text-sm pb-4">
   {{#if edit}}
-    <form action="/edit" method="post">
-      <input type=hidden name="recipe" value="{{edit}}">
-      <input type=submit value="Edit" class="rounded-md bg-lime-600 text-white p-3 mr-3">
-      <input type=button value="Delete" class="rounded-md bg-red-400 text-white p-3" onClick="confirmDelete()">
+    <form action="/edit/{{username}}/{{slug}}" method="post" class="inline">
+      <input type="submit" value="Edit" class="rounded-md bg-lime-600 text-white p-3 mr-3">
+      <input type="button" value="Delete" class="rounded-md bg-red-400 text-white p-3 mr-3" onClick="confirmDelete()">
+    </form>
+  {{/if}}
+  <input type="button" value="Share" class="rounded-md bg-blue-400 text-white p-3" onClick="doShare()">
+  {{#if logged_in}}
+    <form action="/save" method="post" class="inline">
+      <input type="submit" value="Bookmark" class="rounded-md bg-blue-400 text-white p-3 ml-3">
     </form>
   {{/if}}
 </div>
+
+<div class="text-sm text-blue-400" id="msg"></div>
 
 <img src="/img/image1.png" class="w-3/4 rounded-sm mx-auto my-6">
 
@@ -107,6 +114,22 @@ function confirmDelete() {
     document.getElementById("confirmDeleteModal").style.display = "none";
   } else {
     document.getElementById("confirmDeleteModal").style.display = "block";
+  }
+}
+
+function doShare(recipe_title) {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Cookbook recipe - ' + recipe_title,
+      url: window.location.href,
+      text: 'Check out this recipe!'
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    document.getElementById("msg").innerHTML = "Recipe URL copied to clipboard."
   }
 }
 </script>
