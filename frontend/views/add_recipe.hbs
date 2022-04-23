@@ -8,16 +8,11 @@
     </div>
 
     <div class="w-full mb-2">
-      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12>
-{{#each recipe}}
-{{this}}
-
-{{/each}}
-      </textarea>
+      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12>{{recipe}}</textarea>
     </div>
 
     {{#if edit}}
-      <input type="hidden" name="edit" value="true">
+      <input type="hidden" name="edit" value="{{slug}}">
     {{/if}}
 
     <div class="grid grid-cols-3 gap-3 w-full mx-auto">
