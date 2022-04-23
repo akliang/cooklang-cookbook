@@ -9,34 +9,40 @@ import re
 from rest_framework import status
 from rest_framework.response import Response
 from django.http import JsonResponse
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from api.models import Recipe
 from api.serializers import RecipeSerializer
 
 class RecipeView(APIView):
+  authentication_classes = ()
+  permission_classes = (AllowAny,)
+
   def get(self, request, *args, **kw):
     recipe = Recipe.objects.get(slug=kw['slug'], chef__username=kw['username'])
     # TODO: if no recipe, return error
 
-    print(recipe.recipe)
     proc_recipe = clprocess(recipe.recipe)
     
     user = lookup_user_by_api(request)
     if user == recipe.chef:
-      edit = kw['slug']
+      edit = True
     else:
       edit = False
     # TODO: convert to serializer
     return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit})
 
-class GetReceipeWithToken(APIView):
+class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]
   permission_classes = [IsAuthenticated]
 
   def get(self, request, *args, **kw):
     user = lookup_user_by_api(request)
-    return Response(clprocess(f"./data/recipes/{user.username}/{kw['recipe']}.cook"))
+    recipe = Recipe.objects.get(slug=kw['slug'], chef=user)
+    if recipe:
+      return JsonResponse(RecipeSerializer(recipe).data)
+    else:
+      return Response("Error")
 
 class MyRecipes(APIView):
   authentication_classes = [TokenAuthentication]
@@ -57,7 +63,13 @@ class AddRecipe(APIView):
 
   def post(self, request, *args, **kw):
     user = lookup_user_by_api(request)
-    form = RecipeForm(request.POST)
+    if request.POST.get('edit'):
+      print(request.POST.get('edit'))
+      recipe = Recipe.objects.get(slug=request.POST.get('edit'), chef=user)
+      form = RecipeForm(request.POST, instance=recipe)
+    else:
+      form = RecipeForm(request.POST)
+
     # write the form data to cook file
     if form.is_valid():
       # build the slug, first remove all non-alphanumeric characters
