@@ -28,11 +28,8 @@ class LoginTokenAuth(ObtainAuthToken):
 class RegisterAccount(APIView):
   def post(self, request, *args, **kw):
     form = ChefCreationForm(request.POST)
-    print(request.POST)
-    print(form.is_valid())
     if form.is_valid():
       form.save()
-      # TODO: create folder/account?
       return Response(f"User {request.POST['username']} has been registered.")
     else:
       return Response(form.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -41,7 +38,7 @@ class RegisterAccount(APIView):
 # helper function to convert API key into username
 def lookup_user_by_api(request):
   auth = get_authorization_header(request).split()
-  if auth:
+  if auth[1].decode() != 'undefined':
     api_key = auth[1].decode()
     token = Token.objects.get(key=api_key)
     return token.user
