@@ -1,5 +1,5 @@
 function loggedIn(req) {
-  if ("apikey" in req.cookies) {
+  if (req.session.apikey) {
     return true;
   } else {
     return false;
