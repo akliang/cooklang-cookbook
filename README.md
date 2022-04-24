@@ -13,8 +13,8 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - (done) Logout
 - (done) Get redirected to login with proper "next" param
 - (done) Register account
-- Change password (and API token invalidation on pw change)
-- Delete account?
+- (done) Change password (and API token invalidation on pw change)
+- (done) Delete account
 - (done) View a recipe
 - (done) View all my recipes
 - (done) Share a recipe
@@ -39,6 +39,7 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - check cursor-pointer for all buttons
 - figure out all nav paths (back, cancel, what helpful buttons on each page)
 - do not show bookmark button if it's your own recipe
+- why can't session cookie be Secure?
 
 ## Wishlist
 - wysiwyg
@@ -50,6 +51,9 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - AI generate thumbnail image
 - decrease number of API calls (cache all "myrecipes" to local, preferrably all saved recipes too)
 - Cooklang "ingester" to copy-paste cooklang file into db
+- export account
+- make cookbook PDF
+- make printable cookbook
 
 ## Testing todo
 - selenium test for frontend
