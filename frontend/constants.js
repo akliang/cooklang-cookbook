@@ -6,3 +6,5 @@ exports.api_viewrecipes_url = api_url + '/view/';
 exports.api_viewrecipesbytoken_url = api_url + '/view_by_token/';
 exports.api_addrecipe_url = api_url + '/add/';
 exports.api_deleterecipe_url = api_url + '/delete/';
+exports.api_bookmarkrecipe_url = api_url + '/bookmark/';
+exports.api_viewbookmarkrecipes_url = api_url + '/view_bookmarks/';
