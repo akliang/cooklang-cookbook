@@ -7,7 +7,7 @@ const logger = require('./logger');
 
 // login page
 router.get('/login', (req, res) => {
-  res.render('login', {next: req.query.next});
+  res.render('login', {next: req.query.next, msg: req.flash('login_msg')});
 });
 
 // login to API backend
@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
   fetch(C.api_login_url, {
     method: 'POST',
     body: qs.stringify({
-      'username': req.body.username,
+      'username': req.body.username.toLowerCase(),
       'password': req.body.password
     }),
     headers: {
@@ -26,21 +26,20 @@ router.post('/login', (req, res) => {
     if (response.ok) {
       return response.json();
     } else {
-      res.render('login', {msg: "Invalid login attempt."});
+      req.flash('login_msg', 'Invalid login attempt');
+      res.redirect('/login');
       throw new Error("Login attempt failed for user: " + req.body.username);
     }
   })
   .then(json => {
-    res.cookie('apikey', json['token'], {
-      sameSite: 'strict',
-      httpOnly: false,
-      secure: true,
+    req.session.apikey = json['token'];
+    req.session.save(() => {
+      if (req.body.next) {
+        res.redirect(req.body.next);
+      } else {
+        res.redirect('/');
+      }
     });
-    if (req.body.next) {
-      res.redirect(req.body.next);
-    } else {
-      res.redirect('/');
-    }
   })
   .catch(error => {
     logger.error("(Login) " + error.message);
@@ -49,7 +48,7 @@ router.post('/login', (req, res) => {
 
 // logout
 router.get('/logout', (req, res) => {
-  res.clearCookie('apikey');
+  req.session.apikey = null;
   res.redirect('login');
 });
 
@@ -64,7 +63,7 @@ router.post('/register', (req, res) => {
     method: 'POST',
     body: qs.stringify({
       'email': req.body.email,
-      'username': req.body.username,
+      'username': req.body.username.toLowerCase(),
       'password1': req.body.password1,
       'password2': req.body.password2
     }),
@@ -74,7 +73,7 @@ router.post('/register', (req, res) => {
   })
   .then(response => {
     if (response.ok) {
-      // TODO: add "account created successfully" message
+      req.flash('login_msg', 'Account created!');
       res.redirect('/login');
       // break the promise chain
       return { then: function() {} };
