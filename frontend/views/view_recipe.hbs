@@ -9,12 +9,15 @@
       <input type="button" value="Delete" class="rounded-md bg-red-400 text-white p-3 mr-3" onClick="confirmDelete()">
     </form>
   {{/if}}
-  <input type="button" value="Share" class="rounded-md bg-blue-400 text-white p-3" onClick="doShare()">
-  {{#if logged_in}}
-    <form action="/save" method="post" class="inline">
-      <input type="submit" value="Bookmark" class="rounded-md bg-blue-400 text-white p-3 ml-3">
-    </form>
-  {{/if}}
+  <input type="button" value="Share" class="rounded-md bg-blue-400 text-white p-3 mr-3" onClick="doShare()">
+  <!-- TODO: if self, then don't show this button -->
+  <a href="/bookmark/{{username}}/{{slug}}">
+    {{#if bookmarked}}
+      <input type="button" value="Bookmarked!" class="rounded-md bg-blue-600 text-white p-3">
+    {{else}}
+      <input type="button" value="Bookmark" class="rounded-md bg-blue-400 text-white p-3">
+    {{/if}}
+  </a>
 </div>
 
 <div class="text-sm text-blue-400" id="msg"></div>
