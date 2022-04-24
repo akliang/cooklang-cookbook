@@ -39,7 +39,7 @@ class RecipeView(APIView):
       # TODO: convert to serializer
       return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked})
     else:
-      return Response(None)
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]
@@ -51,7 +51,7 @@ class GetRecipeWithToken(APIView):
     if recipe:
       return JsonResponse(RecipeSerializer(recipe).data)
     else:
-      return Response("Error")
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class MyRecipes(APIView):
   authentication_classes = [TokenAuthentication]
@@ -64,7 +64,7 @@ class MyRecipes(APIView):
       serialized = RecipeSerializer(recipes, many=True)
       return JsonResponse(serialized.data, safe=False)
     else:
-      return Response("Error")
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class MyBookmarks(APIView):
   authentication_classes = [TokenAuthentication]
@@ -77,7 +77,7 @@ class MyBookmarks(APIView):
       serialized = RecipeSerializer(recipes, many=True)
       return JsonResponse(serialized.data, safe=False)
     else:
-      return Response("Error")
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class AddRecipe(APIView):
   authentication_classes = [TokenAuthentication]
@@ -124,7 +124,7 @@ class DeleteRecipe(APIView):
       recipe.delete()
       return Response(True)
     else:
-      return Response(None)
+      return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class BookmarkRecipe(APIView):
   authentication_classes = [TokenAuthentication]
@@ -145,4 +145,4 @@ class BookmarkRecipe(APIView):
         Bookmark.objects.create(chef=user, recipe=recipe)
         return Response(True)
       else:
-        return Response(False)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
