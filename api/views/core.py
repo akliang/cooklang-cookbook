@@ -118,7 +118,7 @@ class DeleteRecipe(APIView):
 
   def post(self, request, *args, **kw):
     user = lookup_user_by_api(request)
-    recipe = Recipe.objects.get(slug=kw['slug'], chef=user)
+    recipe = Recipe.objects.get(slug=request.POST.get('slug'), chef=user)
 
     if recipe:
       recipe.delete()
