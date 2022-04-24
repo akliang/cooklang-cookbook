@@ -6,6 +6,8 @@ from api.views.core import MyBookmarks
 urlpatterns = [
   path('api_login/', views.LoginTokenAuth.as_view(), name='api_login'),
   path('api_register/', views.RegisterAccount.as_view(), name='api_register'),
+  path('api_delete/', views.DeleteAccount.as_view(), name='api_delete'),
+  path('api_changepw/', views.ChangeAccountPassword.as_view(), name='api_changepw'),
   path('view/<str:username>/<str:slug>', views.RecipeView.as_view(), name='view_recipe'),
   path('view_by_token/<str:slug>', views.GetRecipeWithToken.as_view(), name='get_recipe_with_token'),
   path('view/', views.MyRecipes.as_view(), name='my_recipes'),

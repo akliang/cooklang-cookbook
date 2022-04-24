@@ -90,4 +90,69 @@ router.post('/register', (req, res) => {
   });
 });
 
+// delete account (post)
+router.post('/delete_account', (req, res) => {
+  fetch(C.api_deleteaccount_url, {
+    method: 'POST',
+    headers: {
+      "Authorization": "token " + req.session.apikey
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error(response.statusText);
+    }
+  })
+  .then(json => {
+    logger.info("User " + json.username + " (API key " + req.session.apikey + ") deleted.");
+    req.session.apikey = undefined;
+    req.session.save(() => {
+      res.redirect('/');
+    });
+  })
+  .catch(error => {
+    logger.error("Delete-account: " + error.message);
+  })
+});
+
+// change password (get)
+router.get('/change_password', (req, res) => {
+  res.render('change_password');
+});
+
+// change password (post)
+router.post('/change_password', (req, res) => {
+  fetch(C.api_changepassword_url, {
+    method: 'POST',
+    headers: {
+      "Authorization": "token " + req.session.apikey,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: qs.stringify({
+      'old_password': req.body.old_password,
+      'new_password1': req.body.new_password1,
+      'new_password2': req.body.new_password2
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      req.flash('login_msg', 'Password updated! Please log in again.');
+      res.redirect('/logout');
+      // break the promise chain
+      return { then: function() {} };
+    } else {
+      return response.json()
+    }
+  })
+  .then(json => {
+    res.render('change_password', {msg: json});
+    throw new Error(json);
+  })
+  .catch(error => {
+    logger.error("(Change-password) " + error.message);
+  });
+});
+
 module.exports = router;
