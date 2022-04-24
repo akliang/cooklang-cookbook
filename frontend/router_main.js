@@ -21,7 +21,7 @@ router.get('/v/:username/:slug', (req, res) => {
   })
   .then(json => {
     // TODO: make this input less complex
-    res.render('view_recipe', {title: json.title, ingredients: json.ingredients, recipe: json.recipe, edit: json.edit, bookmarked: json.bookmarked, username: req.params.username, slug: req.params.slug});
+    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug});
   })
   .catch(error => {
     logger.error("(View-recipe) " + error.message);
