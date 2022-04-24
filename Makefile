@@ -18,3 +18,6 @@ test:
 
 conn-api:
 	@docker exec -it cooklang-cookbook_api_1 bash
+
+conn-db:
+	@docker exec -it cooklang-cookbook_db_1 bash
