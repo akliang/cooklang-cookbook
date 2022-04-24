@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
-from api.models import Recipe
+from api.models import Recipe, Bookmark
 from api.serializers import RecipeSerializer
 
 class RecipeView(APIView):
@@ -23,14 +23,21 @@ class RecipeView(APIView):
     # TODO: if no recipe, return error
 
     proc_recipe = clprocess(recipe.recipe)
-    
     user = lookup_user_by_api(request)
+
     if user == recipe.chef:
       edit = True
     else:
       edit = False
+
+    try:
+      bookmark = Bookmark.objects.get(chef=user, recipe=recipe)
+      bookmarked = True
+    except Bookmark.DoesNotExist:
+      bookmarked = False
+
     # TODO: convert to serializer
-    return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit})
+    return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked})
 
 class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]
@@ -52,6 +59,19 @@ class MyRecipes(APIView):
     user = lookup_user_by_api(request)
     if user:
       recipes = Recipe.objects.filter(chef=user)
+      serialized = RecipeSerializer(recipes, many=True)
+      return JsonResponse(serialized.data, safe=False)
+    else:
+      return Response("Error")
+
+class MyBookmarks(APIView):
+  authentication_classes = [TokenAuthentication]
+  permission_classes = [IsAuthenticated]
+
+  def get(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+    if user:
+      recipes = Recipe.objects.filter(bookmark__chef=user)
       serialized = RecipeSerializer(recipes, many=True)
       return JsonResponse(serialized.data, safe=False)
     else:
@@ -103,3 +123,24 @@ class DeleteRecipe(APIView):
       return Response(True)
     else:
       return Response(None)
+
+class BookmarkRecipe(APIView):
+  authentication_classes = [TokenAuthentication]
+  permission_classes = [IsAuthenticated]
+
+  def post(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+    recipe = Recipe.objects.get(slug=request.POST.get('slug'), chef__username=request.POST.get('username'))
+
+    try:
+      # remove the bookmark
+      bookmark = Bookmark.objects.get(chef=user, recipe=recipe)
+      bookmark.delete()
+      return Response(True)
+    except Bookmark.DoesNotExist:
+      # add the bookmark
+      if recipe and user:
+        Bookmark.objects.create(chef=user, recipe=recipe)
+        return Response(True)
+      else:
+        return Response(False)
