@@ -20,7 +20,6 @@ router.get('/v/:username/:slug', (req, res) => {
     return response.json()
   })
   .then(json => {
-    // TODO: make this input less complex
     res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug});
   })
   .catch(error => {
@@ -123,8 +122,7 @@ router.post('/edit/:username/:slug', (req, res) => {
       }
     })
     .then(json => {
-      // TODO: make this cleaner
-      res.render('add_recipe', {title: json.title, recipe: json.recipe, slug: json.slug, edit: true});
+      res.render('add_recipe', {data: json, edit: true});
     })
     .catch(error => {
       logger.error("(Edit-recipe) " + error.message);
