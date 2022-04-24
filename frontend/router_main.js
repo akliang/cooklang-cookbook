@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
       }
     })
     .then(json => {
-      res.render('home', {title: "My Recipes", recipes: json});
+      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg')});
     })
     .catch(error => {
       logger.error("(Home) " + error.message);
@@ -131,17 +131,19 @@ router.post('/edit/:username/:slug', (req, res) => {
 });
 
 // delete recipe (post)
-router.post('/delete', (req, res) => {
+router.get('/delete/:slug', (req, res) => {
   if (!h.loggedIn(req)) {
-    // TODO: make delete a GET url and append ?next
-    // TODO: make sure the user is authorize to delete this recipe
-    res.redirect('/login');
+    res.redirect('/login?next=/delete/' + req.params.slug);
   } else {
-    fetch(C.api_deleterecipe_url + req.body.slug, {
+    fetch(C.api_deleterecipe_url, {
       method: 'POST',
       headers: {
         "Authorization": "token " + req.session.apikey,
-      }
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: qs.stringify({
+        'slug': req.params.slug
+      })
     })
     .then(response => {
       if (response.ok) {
