@@ -217,4 +217,13 @@ router.get('/bookmarks', (req, res) => {
   }  
 });
 
+
+router.get('/account', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/account');
+  } else {
+    res.render('account', {msg: req.flash('account_msg')});
+  }
+});
+
 module.exports = router;
