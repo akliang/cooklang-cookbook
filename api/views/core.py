@@ -20,24 +20,26 @@ class RecipeView(APIView):
 
   def get(self, request, *args, **kw):
     recipe = Recipe.objects.get(slug=kw['slug'], chef__username=kw['username'])
-    # TODO: if no recipe, return error
 
-    proc_recipe = clprocess(recipe.recipe)
-    user = lookup_user_by_api(request)
+    if recipe:
+      proc_recipe = clprocess(recipe.recipe)
+      user = lookup_user_by_api(request)
 
-    if user == recipe.chef:
-      edit = True
+      if user == recipe.chef:
+        edit = True
+      else:
+        edit = False
+
+      try:
+        bookmark = Bookmark.objects.get(chef=user, recipe=recipe)
+        bookmarked = True
+      except Bookmark.DoesNotExist:
+        bookmarked = False
+
+      # TODO: convert to serializer
+      return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked})
     else:
-      edit = False
-
-    try:
-      bookmark = Bookmark.objects.get(chef=user, recipe=recipe)
-      bookmarked = True
-    except Bookmark.DoesNotExist:
-      bookmarked = False
-
-    # TODO: convert to serializer
-    return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked})
+      return Response(None)
 
 class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]
