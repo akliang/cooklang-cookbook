@@ -7,7 +7,7 @@ app.use(session({
   saveUninitialized: true,
   resave: false,
   cookie: { 
-    secure:false,
+    secure: true,
     maxAge: 1000*60*60*24,
   }
 }));
@@ -26,8 +26,6 @@ app.use(express.urlencoded({extended: true}));
 const server = app.listen(8003, () => {
   console.log(`Express running → PORT ${server.address().port}`);
 });
-var cookieParser = require('cookie-parser');
-app.use(cookieParser());
 
 
 // handlebars
