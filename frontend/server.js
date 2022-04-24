@@ -1,6 +1,18 @@
 // express setup
 const express = require('express');
 const app = express();
+const session = require('express-session');
+app.use(session({ 
+  secret: process.env.EXPRESS_SECRET,
+  saveUninitialized: true,
+  resave: false,
+  cookie: { 
+    secure:false,
+    maxAge: 1000*60*60*24,
+  }
+}));
+const flash = require('connect-flash');
+app.use(flash());
 
 // logging setup
 const morgan = require('morgan');
