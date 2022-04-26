@@ -1,35 +1,14 @@
+<form action="/testing" method="post" enctype="multipart/form-data">
+  <!-- this is were the previews should be shown. -->
+  <div class="dropzone" style="border:1px solid black" id="add-recipe"></div>
+  
+  <!-- Now setup your input fields -->
+  <input type="email" name="username" />
+  <input type="password" name="password" />
 
-{{> logo}}
+  <button type="submit" id="submit-recipe">Submit data and files!</button>
+</form>
 
-<div class="w-2/3 mx-auto">
-  <form>
-    <div class="w-full mb-2">
-      <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" placeholder="Title" value="{{data.title}}" autofocus>
-    </div>
-
-    <!-- dropzone -->
-    <div class="w-full h-36 border-2 border-dashed rounded-md mb-2 dropzone" id="add-recipe"></div>
-
-    <div class="w-full mb-2">
-      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12>{{data.recipe}}</textarea>
-    </div>
-
-    {{#if edit}}
-      <input type="hidden" name="edit" value="{{data.slug}}">
-    {{/if}}
-
-    <div class="grid grid-cols-3 gap-3 w-full mx-auto">
-      <a href="/">
-        <div class="w-full bg-red-100 hover:bg-red-200 p-3 rounded-md">
-          X
-        </div>
-      </a>
-      <div class="col-span-2">
-        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md cursor-pointer" type="submit" value="Save" id="submit-recipe">
-      </div>
-    </div>
-  </form>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
 <script type="text/javascript">
@@ -42,7 +21,6 @@ theOne = new Dropzone("div#add-recipe", {
     maxFiles: 1,
     paramName: 'recipe',
     url: "/testing",
-    dictDefaultMessage: '<img src="/img/upload.png" class="h-36 mx-auto p-3">',
 
     init: function() {
         var myDropzone = this;
