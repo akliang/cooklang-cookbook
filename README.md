@@ -23,7 +23,7 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - (done) Add a recipe
 - (done) Edit a recipe
 - (done) Delete a recipe
-- Upload images
+- (done) Upload images
 
 ## Todo
 - edit recipe still makes a POST call so page can't be reloaded without warning
@@ -34,12 +34,12 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - wrap all API calls to auto-append header?
 - figure out where the "stir-fry-string-beans" call is coming from
 - try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
-- add delete recipe flash message
 - change "back" button on edit recipe based on context
-- check cursor-pointer for all buttons
 - figure out all nav paths (back, cancel, what helpful buttons on each page)
-- do not show bookmark button if it's your own recipe
-- why can't session cookie be Secure?
+- why can't session cookie be Secure? (or set samesite)
+- add padding to main layout so nav bar doesn't cover things (bonus: move navbar to main structure and toggle?)
+- make recipe title (slug) unique
+- make upload image prettier
 
 ## Wishlist
 - wysiwyg
@@ -97,9 +97,17 @@ dc logs -f
 - https://forum.djangoproject.com/t/how-to-authenticate-django-rest-framework-api-calls-from-a-vue-js-client-using-session-authentication-and-httponly-cookies/5422
 - https://stackoverflow.com/questions/70113882/axios-how-exactly-to-preserve-session-after-successful-authorization-and-send
 - https://stackoverflow.com/questions/28100979/button-does-not-function-on-the-first-click
+- https://stackoverflow.com/questions/15772394/how-to-upload-display-and-save-images-using-node-js-and-express
+- https://appdividend.com/2022/03/03/node-express-image-upload-and-resize/
+- https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+- https://www.sitepoint.com/file-upload-form-express-dropzone-js/
+- https://stackoverflow.com/questions/20533191/dropzone-js-client-side-image-resizing
+- https://github.com/sitepoint-editors/image-uploads-dropzonejs-node-express
+
 
 
 ## Credits
 - fry pan: <a href="https://www.flaticon.com/free-icon/frying-pan_4329602" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
 - list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
 - person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
+- upload: <a href="https://www.flaticon.com/premium-icon/upload_4131814" title="image icons">Image icons created by mim_studio - Flaticon</a>
