@@ -4,6 +4,7 @@ const qs = require('qs');
 const fetch = require('node-fetch');
 const C = require('./constants');
 const logger = require('./logger');
+const h = require('./helpers');
 
 // login page
 router.get('/login', (req, res) => {
