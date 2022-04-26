@@ -55,7 +55,7 @@ router.get('/', (req, res) => {
       }
     })
     .then(json => {
-      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg'), shownav: true});
+      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg'), shownav: true, showadd: true});
     })
     .catch(error => {
       logger.error("(Home) " + error.message);
