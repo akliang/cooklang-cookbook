@@ -31,15 +31,12 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - set up Django logging
 - refactor all get paths to "/<regex>" to wrap in logged-in
 - wrap all API calls to auto-append header?
-- figure out where the "stir-fry-string-beans" call is coming from
 - try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
-- change "back" button on edit recipe based on context
-- figure out all nav paths (back, cancel, what helpful buttons on each page)
-- add padding to main layout so nav bar doesn't cover things (bonus: move navbar to main structure and toggle?)
 - make upload image prettier
 - fix checkbox alignment on view-recipe
-- add in default recipe image
 - make view-recipe HR show/disappear based on image or ingredients list
+- remove or replace image
+- login failure loses next param
 
 ## Wishlist
 - wysiwyg
