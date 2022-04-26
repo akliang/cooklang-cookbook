@@ -26,7 +26,6 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - (done) Upload images
 
 ## Todo
-- edit recipe still makes a POST call so page can't be reloaded without warning
 - redirect http400 to its own logging file
 - clean up logging files?  (access.log vs console.log and an "all" file)
 - set up Django logging
@@ -36,10 +35,11 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
 - change "back" button on edit recipe based on context
 - figure out all nav paths (back, cancel, what helpful buttons on each page)
-- why can't session cookie be Secure? (or set samesite)
 - add padding to main layout so nav bar doesn't cover things (bonus: move navbar to main structure and toggle?)
-- make recipe title (slug) unique
 - make upload image prettier
+- fix checkbox alignment on view-recipe
+- add in default recipe image
+- make view-recipe HR show/disappear based on image or ingredients list
 
 ## Wishlist
 - wysiwyg
@@ -54,6 +54,7 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - export account
 - make cookbook PDF
 - make printable cookbook
+- session cookie secure=true
 
 ## Testing todo
 - selenium test for frontend
@@ -111,3 +112,5 @@ dc logs -f
 - list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
 - person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
 - upload: <a href="https://www.flaticon.com/premium-icon/upload_4131814" title="image icons">Image icons created by mim_studio - Flaticon</a>
+- cutting board: <a href="https://unsplash.com/@sanketshah">Sanket Shah</a>
+  
