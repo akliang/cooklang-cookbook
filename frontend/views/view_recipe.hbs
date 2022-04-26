@@ -23,7 +23,9 @@
 
 <div class="text-sm text-blue-400" id="msg"></div>
 
-<img src="/img/image1.png" class="w-3/4 rounded-sm mx-auto my-6">
+{{#if data.image}}
+  <img src="/img/recipes/{{data.image}}.jpg" class="w-3/4 rounded-md mx-auto my-6">
+{{/if}}
 
 <table class="table-fixed w-3/4 mx-auto text-sm">
   <tbody>
