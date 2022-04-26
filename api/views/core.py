@@ -37,7 +37,7 @@ class RecipeView(APIView):
         bookmarked = False
 
       # TODO: convert to serializer
-      return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked})
+      return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked, 'image': recipe.image})
     else:
       return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -102,7 +102,6 @@ class AddRecipe(APIView):
       obj = form.save(commit=False)
       obj.chef = user
       obj.slug = slug
-      obj.image = ""
       obj.save()
 
       return Response({
