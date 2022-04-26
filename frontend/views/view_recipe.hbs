@@ -7,9 +7,14 @@
     <a href="/edit/{{username}}/{{slug}}">
       <div class="rounded-md bg-lime-600 text-white p-3 mr-3 cursor-pointer w-fit inline">Edit</div>
     </a>
-    <input type="button" value="Delete" class="rounded-md bg-red-400 text-white p-3 mr-3 cursor-pointer" onClick="confirmDelete()">
+    <a onClick="confirmDelete()">
+      <div class="rounded-md bg-red-400 text-white p-3 mr-3 cursor-pointer w-fit inline">Delete</div>
+    </a>
   {{/if}}
-  <input type="button" value="Share" class="rounded-md bg-blue-400 text-white p-3 mr-3 cursor-pointer" onClick="doShare()">
+
+  <a onClick="doShare()">
+    <div class="rounded-md bg-blue-400 text-white p-3 mr-3 cursor-pointer w-fit inline">Share</div>
+  </a>
   {{#unless data.edit}}
     <a href="/bookmark/{{username}}/{{slug}}">
       {{#if data.bookmarked}}
