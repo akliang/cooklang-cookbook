@@ -2,7 +2,15 @@
 {{> header}}
 
 <div class="w-screen md:w-1/3 text-3xl mx-auto text-center">
-  {{{body}}}
+  <div class="h-full">
+    {{{body}}}
+  </div>
+
+  <div class="h-20">
+    {{#if shownav}}
+      {{> navbar}}
+    {{/if}}
+  </div>
 </div>
 
 {{> footer}}
