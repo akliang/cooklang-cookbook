@@ -90,6 +90,15 @@ router.post('/register', (req, res) => {
   });
 });
 
+// account page (get)
+router.get('/account', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/account');
+  } else {
+    res.render('account', {msg: req.flash('account_msg')});
+  }
+});
+
 // delete account (post)
 router.post('/delete_account', (req, res) => {
   fetch(C.api_deleteaccount_url, {
