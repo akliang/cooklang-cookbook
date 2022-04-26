@@ -150,7 +150,7 @@ router.get('/edit/:username/:slug', (req, res) => {
       }
     })
     .then(json => {
-      res.render('add_recipe', {data: json, edit: true});
+      res.render('add_recipe', {data: json, edit: true, back: "/v/" + req.params.username + "/" + req.params.slug});
     })
     .catch(error => {
       logger.error("(Edit-recipe) " + error.message);
