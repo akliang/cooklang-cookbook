@@ -130,8 +130,8 @@ router.post('/add', upload.single('recipe'), (req, res) => {
   }
 });
 
-// edit recipe (post)
-router.post('/edit/:username/:slug', (req, res) => {
+// edit recipe (get)
+router.get('/edit/:username/:slug', (req, res) => {
   if (!h.loggedIn(req)) {
     // TODO: make sure the logged in user is actually authorized to edit this recipe
     res.redirect('/login?next=/edit/' + req.params.username + '/' + req.params.slug);

@@ -15,7 +15,7 @@
     </div>
 
     {{#if edit}}
-      <input type="hidden" name="edit" value="{{data.slug}}">
+      <input type="hidden" name="edit" id="edit" value="{{data.slug}}">
     {{/if}}
 
     <div class="grid grid-cols-3 gap-3 w-full mx-auto">
@@ -61,6 +61,7 @@ theOne = new Dropzone("div#add-recipe", {
         this.on("sending", function(data, xhr, formData) {
           formData.append("title", document.getElementById("title").value);
           formData.append("recipe", document.getElementById("recipe").value);
+          formData.append("edit", document.getElementById("edit").value);
         });
 
         this.on("success", function(file, response) {
