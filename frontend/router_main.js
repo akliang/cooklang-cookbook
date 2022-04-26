@@ -6,7 +6,7 @@ const C = require('./constants');
 const logger = require('./logger');
 const h = require('./helpers');
 const multer  = require('multer');
-const upload = multer({ dest: 'images/' });
+const upload = multer({ dest: 'static/img/' });
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
@@ -73,11 +73,24 @@ router.get('/add', (req, res) => {
 });
 
 // add recipe (post)
-router.post('/add', (req, res) => {
+router.post('/add', upload.single('recipe'), (req, res) => {
   if (!h.loggedIn(req)) {
     req.flash('login_msg', 'Something went wrong.  Please contact us for support.');
     res.redirect('/login?next=/add');
   } else {
+    // save the image first
+    var image_filename = undefined;
+    if (req.file) {
+      sharp(req.file.path)
+      .resize(600, 1200, {fit: 'inside'})
+      .jpeg({quality: 90})
+      .toFile(path.resolve(req.file.destination, 'recipes', req.file.filename + '.jpg'))
+      .then(() => {
+        fs.unlinkSync(req.file.path);
+      });
+      image_filename = req.file.filename;
+    }    
+
     fetch(C.api_addrecipe_url, {
       method: 'POST',
       headers: {
@@ -88,18 +101,28 @@ router.post('/add', (req, res) => {
         'title': req.body.title,
         'recipe': req.body.recipe,
         'edit': req.body.edit,
+        'image': image_filename,
       })
     })
     .then(response => {
+      console.log(response.status)
       if (response.ok) {
         return response.json();
       } else {
+        // TODO: recipe already exists error
         res.redirect('/login');
         throw new Error(response.statusText + " - invalid API key (attempted API key was: " + req.session.apikey + ")");
       }
     })
     .then(json => {
-      res.redirect('/v/' + json.username + '/' + json.slug);
+      if (image_filename) {
+        res.send({
+          status: true,
+          url: '/v/' + json.username + '/' + json.slug,
+        });
+      } else {
+        res.redirect('/v/' + json.username + '/' + json.slug);
+      }
     })
     .catch(error => {
       logger.error("(Add recipe) " + error.message);
@@ -220,33 +243,6 @@ router.get('/bookmarks', (req, res) => {
       logger.error("(View-bookmarks) " + error.message);
     });
   }  
-});
-
-router.post('/process_image', (req, res) => {
-  if (!h.loggedIn(req)) {
-    return false
-  } else {
-    
-  }
-});
-
-router.get('/testing', (req, res) => {
-  res.render('testing');
-});
-
-router.post('/testing', upload.single('recipe'), (req, res, next) => {
-  console.log("working");
-  console.log(req.file);
-  sharp(req.file.path).resize(600, 1200, {fit: 'inside'}).jpeg({quality: 90}).toFile(path.resolve(req.file.destination, 'resized', req.file.filename + '.jpg'))
-  .then(() => {
-    fs.unlinkSync(req.file.path);
-    console.log("done");
-  });
-  
-
-  // console.log(req.file);
-  // console.log(req.body);
-  return true;
 });
 
 module.exports = router;

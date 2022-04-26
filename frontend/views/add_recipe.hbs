@@ -2,16 +2,16 @@
 {{> logo}}
 
 <div class="w-2/3 mx-auto">
-  <form>
+  <form action="/add" method="post">
     <div class="w-full mb-2">
-      <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" placeholder="Title" value="{{data.title}}" autofocus>
+      <input class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" type="text" name="title" id="title" placeholder="Title" value="{{data.title}}" autofocus>
     </div>
 
     <!-- dropzone -->
     <div class="w-full h-36 border-2 border-dashed rounded-md mb-2 dropzone" id="add-recipe"></div>
 
     <div class="w-full mb-2">
-      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" placeholder="Type recipe here" rows=12>{{data.recipe}}</textarea>
+      <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" id="recipe" placeholder="Type recipe here" rows=12>{{data.recipe}}</textarea>
     </div>
 
     {{#if edit}}
@@ -40,8 +40,9 @@ theOne = new Dropzone("div#add-recipe", {
     uploadMultiple: false,
     parallelUploads: 1,
     maxFiles: 1,
+    maxFilesize: 3,
     paramName: 'recipe',
-    url: "/testing",
+    url: "/add",
     dictDefaultMessage: '<img src="/img/upload.png" class="h-36 mx-auto p-3">',
 
     init: function() {
@@ -49,29 +50,21 @@ theOne = new Dropzone("div#add-recipe", {
 
         // First change the button to actually tell Dropzone to process the queue.
         document.getElementById("submit-recipe").addEventListener("click", function(e) {
+          if (myDropzone.getQueuedFiles().length > 0) {
             // Make sure that the form isn't actually being sent.
-            console.log("click")
             e.preventDefault();
             e.stopPropagation();
             myDropzone.processQueue();
+          }
         });
 
-        // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
-        // of the sending event because uploadMultiple is set to true.
-        this.on("sendingmultiple", function() {
-            console.log("sending")
-        // Gets triggered when the form is actually being sent.
-        // Hide the success button or the complete form.
+        this.on("sending", function(data, xhr, formData) {
+          formData.append("title", document.getElementById("title").value);
+          formData.append("recipe", document.getElementById("recipe").value);
         });
-        this.on("successmultiple", function(files, response) {
-            console.log("success")
-        // Gets triggered when the files have successfully been sent.
-        // Redirect user or notify of success.
-        });
-        this.on("errormultiple", function(files, response) {
-            console.log("error")
-        // Gets triggered when there was an error sending the files.
-        // Maybe show form again, and notify user of error
+
+        this.on("success", function(file, response) {
+          window.location.href = response.url;
         });
     }
 });
