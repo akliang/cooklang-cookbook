@@ -96,7 +96,7 @@ router.get('/account', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login?next=/account');
   } else {
-    res.render('account', {msg: req.flash('account_msg')});
+    res.render('account', {msg: req.flash('account_msg'), shownav: true});
   }
 });
 

@@ -55,7 +55,7 @@ router.get('/', (req, res) => {
       }
     })
     .then(json => {
-      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg')});
+      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg'), shownav: true});
     })
     .catch(error => {
       logger.error("(Home) " + error.message);
@@ -237,7 +237,7 @@ router.get('/bookmarks', (req, res) => {
       }
     })
     .then(json => {
-      res.render('home', {title: "Bookmarked Recipes", recipes: json});
+      res.render('home', {title: "Bookmarked Recipes", recipes: json, shownav: true});
     })
     .catch(error => {
       logger.error("(View-bookmarks) " + error.message);

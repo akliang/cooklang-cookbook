@@ -1,6 +1,5 @@
 
 {{> logo}}
-{{> navbar}}
 
 <div class="text-center text-2xl font-bold">
   My Account
@@ -22,7 +21,9 @@
 </div>
 
 <div class="w-1/2 mx-auto">
-  <button type="button" class="w-full p-4 text-base border border-slate-200 rounded-md mb-3 block cursor-pointer" onClick="confirmDelete()">Delete account</div>
+  <a onClick="confirmDelete()">
+    <div class="w-full p-4 text-base border border-slate-200 rounded-md mb-3 block cursor-pointer">Delete account</div>
+  </a>
 </div>
 
 <div id="confirmDeleteModal" class="hidden">
