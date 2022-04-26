@@ -1,4 +1,12 @@
-<div class="text-3xl my-6 font-bold p-6 pb-2">
+<div class="text-sm text-left mt-10 ml-16 pl-2 mb-4">
+{{#if data.bookmarked}}
+  <a href="/bookmarks"><< Back to bookmarks</a>
+{{else if data.edit}}
+  <a href="/"><< Back to home</a>
+{{/if}}
+</div>
+
+<div class="text-3xl mb-6 font-bold px-6 pb-2">
   {{data.title}}
 </div>
 
