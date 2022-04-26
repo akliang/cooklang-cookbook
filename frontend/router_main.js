@@ -5,6 +5,11 @@ const fetch = require('node-fetch');
 const C = require('./constants');
 const logger = require('./logger');
 const h = require('./helpers');
+const multer  = require('multer');
+const upload = multer({ dest: 'images/' });
+const path = require('path');
+const fs = require('fs');
+const sharp = require('sharp');
 
 //
 // UNPROTECTED ROUTES
@@ -217,13 +222,31 @@ router.get('/bookmarks', (req, res) => {
   }  
 });
 
-
-router.get('/account', (req, res) => {
+router.post('/process_image', (req, res) => {
   if (!h.loggedIn(req)) {
-    res.redirect('/login?next=/account');
+    return false
   } else {
-    res.render('account', {msg: req.flash('account_msg')});
+    
   }
+});
+
+router.get('/testing', (req, res) => {
+  res.render('testing');
+});
+
+router.post('/testing', upload.single('recipe'), (req, res, next) => {
+  console.log("working");
+  console.log(req.file);
+  sharp(req.file.path).resize(600, 1200, {fit: 'inside'}).jpeg({quality: 90}).toFile(path.resolve(req.file.destination, 'resized', req.file.filename + '.jpg'))
+  .then(() => {
+    fs.unlinkSync(req.file.path);
+    console.log("done");
+  });
+  
+
+  // console.log(req.file);
+  // console.log(req.body);
+  return true;
 });
 
 module.exports = router;
