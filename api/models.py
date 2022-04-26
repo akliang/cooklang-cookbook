@@ -10,6 +10,9 @@ class Recipe(models.Model):
     recipe = models.TextField()
     image = models.CharField(max_length=200, blank=True)
 
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['chef', 'title', 'slug'], name='unique_recipe_per_chef')]
+
 class Bookmark(models.Model):
     chef = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
