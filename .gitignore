@@ -3,3 +3,4 @@ data/*
 frontend/logs/*
 !frontend/logs/.gitkeep
 frontend/static/img/recipes/*
+logs/*
