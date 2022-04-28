@@ -9,26 +9,40 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - built based on Postgres db instead of the `.cook` flat-file system
 
 ## User story
-- (done) Login
-- (done) Logout
-- (done) Get redirected to login with proper "next" param
-- (done) Register account
-- (done) Change password (and API token invalidation on pw change)
-- (done) Delete account
-- (done) View a recipe
-- (done) View all my recipes
-- (done) Share a recipe
-- (done) Bookmark a recipe
-- (done) View bookmarked recipes
-- (done) Add a recipe
-- (done) Edit a recipe
-- (done) Delete a recipe
-- (done) Upload images
+- Login (get redirected with proper "next" param)
+  - failed login (preserve "next" param)
+- Logout
+- Register account
+  - email already registered
+  - username already registered
+  - password not long enough
+  - passwords don't match
+- Change password (and API token invalidation on pw change)
+  - password not long enough
+  - passwords don't match
+  - password changed successfully (redirect to login with msg)
+- Delete account
+- View a recipe
+  - save as bookmark
+  - share
+- View all my recipes
+- Share a recipe
+- Bookmark a recipe
+- View bookmarked recipes
+- Add a recipe
+  - title not unique
+  - image size too large
+  - can only upload 1 image
+- Edit a recipe
+  - title not unique
+  - image size too large
+  - can only upload 1 image
+- Delete a recipe
+- Upload images
 
 ## Todo
 - redirect http400 to its own logging file
 - clean up logging files?  (access.log vs console.log and an "all" file)
-- set up Django logging
 - refactor all get paths to "/<regex>" to wrap in logged-in
 - wrap all API calls to auto-append header?
 - try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
@@ -37,6 +51,9 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - make view-recipe HR show/disappear based on image or ingredients list
 - remove or replace image
 - login failure loses next param
+- invalid recipe redirect
+- edit invalid recipe redirect
+- extend APIView to something more custom?
 
 ## Wishlist
 - wysiwyg
