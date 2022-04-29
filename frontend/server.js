@@ -18,7 +18,10 @@ app.use(flash());
 // logging setup
 const morgan = require('morgan');
 const logger = require('./logger');
-app.use(morgan('combined', { stream: logger.stream }));
+const skipSuccess = (req, res)  => res.statusCode < 400;
+const skipError = (req, res)  => res.statusCode >= 400;
+app.use(morgan('combined', { skip: skipSuccess, stream: logger.httperror }));
+app.use(morgan('combined', { skip: skipError, stream: logger.httpsuccess }));
 
 // other express and middleware setup
 app.use(express.static('static'));
