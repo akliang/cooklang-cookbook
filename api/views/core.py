@@ -48,14 +48,14 @@ class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]
   permission_classes = [IsAuthenticated]
 
-  def get(self, request, *args, **kw):
+  def post(self, request, *args, **kw):
     user = lookup_user_by_api(request)
     try:
-      recipe = Recipe.objects.get(slug=kw['slug'], chef=user)
+      recipe = Recipe.objects.get(slug=request.POST.get('slug'), chef=user)
       return JsonResponse(RecipeSerializer(recipe).data)
     except Recipe.DoesNotExist:
       apikey = parse_apikey_from_header(request)
-      logger.warning(f"{self.__class__.__name__} - Invalid recipe request for API key {apikey}")
+      logger.warning(f"{self.__class__.__name__} - Invalid recipe request for API key {apikey} and slug \"{request.POST.get('slug')}\"")
       return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class MyRecipes(APIView):

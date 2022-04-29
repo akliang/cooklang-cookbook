@@ -138,10 +138,15 @@ router.get('/edit/:username/:slug', (req, res) => {
     // TODO: make sure the logged in user is actually authorized to edit this recipe
     res.redirect('/login?next=/edit/' + req.params.username + '/' + req.params.slug);
   } else {
-    fetch(C.api_viewrecipesbytoken_url + req.params.slug, {
+    fetch(C.api_viewrecipesbytoken_url, {
+      method: 'POST',
       headers: {
         "Authorization": "token " + req.session.apikey,
-      }
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: qs.stringify({
+        'slug': req.params.slug
+      })
     })
     .then(response => {
       if (response.ok) {
