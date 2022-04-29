@@ -25,8 +25,8 @@ app.use(morgan('combined', { skip: skipError, stream: logger.httpsuccess }));
 
 // other express and middleware setup
 app.use(express.static('static'));
-app.use(express.json({limit: '3mb'}));
-app.use(express.urlencoded({extended: true, limit: '3mb'}));
+app.use(express.json({limit: '15mb'}));
+app.use(express.urlencoded({extended: true, limit: '15mb'}));
 const server = app.listen(8003, () => {
   console.log(`Express running → PORT ${server.address().port}`);
 });
