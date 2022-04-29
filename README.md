@@ -41,19 +41,11 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - Upload images
 
 ## Todo
-- redirect http400 to its own logging file
-- clean up logging files?  (access.log vs console.log and an "all" file)
 - refactor all get paths to "/<regex>" to wrap in logged-in
 - wrap all API calls to auto-append header?
 - try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
-- make upload image prettier
-- fix checkbox alignment on view-recipe
-- make view-recipe HR show/disappear based on image or ingredients list
-- remove or replace image
-- login failure loses next param
-- invalid recipe redirect
-- edit invalid recipe redirect
 - extend APIView to something more custom?
+
 
 ## Wishlist
 - wysiwyg
