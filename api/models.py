@@ -12,6 +12,7 @@ class Recipe(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['chef', 'title', 'slug'], name='unique_recipe_per_chef')]
+        ordering = ['title']
 
 class Bookmark(models.Model):
     chef = models.ForeignKey(User, on_delete=models.CASCADE)
