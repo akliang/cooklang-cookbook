@@ -28,7 +28,8 @@ router.get('/v/:username/:slug', (req, res) => {
     res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug});
   })
   .catch(error => {
-    logger.error("(View-recipe) " + error.message);
+    logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
+    res.render('404')
   });
 });
 
@@ -51,14 +52,14 @@ router.get('/', (req, res) => {
         return response.json();
       } else {
         res.redirect('/login');
-        throw new Error(response.statusText + " - invalid API key");
+        throw new Error(response.statusText);
       }
     })
     .then(json => {
       res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg'), shownav: true, showadd: true});
     })
     .catch(error => {
-      logger.error("(Home) " + error.message);
+      logger.error("Problem loading home screen (API key: " + req.session.apikey + ") // " + error.message, {service: "home"});
     });
   }  
 });
@@ -78,7 +79,7 @@ router.post('/add', upload.single('recipe'), (req, res) => {
     req.flash('login_msg', 'Something went wrong.  Please contact us for support.');
     res.redirect('/login?next=/add');
   } else {
-    // save the image first
+    // first, save the image
     var image_filename = undefined;
     if (req.file) {
       sharp(req.file.path)
@@ -91,6 +92,7 @@ router.post('/add', upload.single('recipe'), (req, res) => {
       image_filename = req.file.filename;
     }    
 
+    // next, save the recipe in the API
     fetch(C.api_addrecipe_url, {
       method: 'POST',
       headers: {
@@ -105,16 +107,16 @@ router.post('/add', upload.single('recipe'), (req, res) => {
       })
     })
     .then(response => {
-      console.log(response.status)
       if (response.ok) {
         return response.json();
       } else {
         // TODO: recipe already exists error
         res.redirect('/login');
-        throw new Error(response.statusText + " - invalid API key (attempted API key was: " + req.session.apikey + ")");
+        throw new Error(response.statusText);
       }
     })
     .then(json => {
+      // Dropzone can't use the res.redirect() return, so send it the URL href to redirect to manually
       if (image_filename) {
         res.send({
           status: true,
@@ -125,7 +127,7 @@ router.post('/add', upload.single('recipe'), (req, res) => {
       }
     })
     .catch(error => {
-      logger.error("(Add recipe) " + error.message);
+      logger.error("Problem adding recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "addrecipe"});
     });
   }
 });
@@ -146,14 +148,14 @@ router.get('/edit/:username/:slug', (req, res) => {
         return response.json()
       } else {
         res.redirect('/');
-        throw new Error(response.statusText + " (API key was: " + req.session.apikey + ")");
+        throw new Error(response.statusText);
       }
     })
     .then(json => {
       res.render('add_recipe', {data: json, edit: true, back: "/v/" + req.params.username + "/" + req.params.slug});
     })
     .catch(error => {
-      logger.error("(Edit-recipe) " + error.message);
+      logger.error("Problem editing recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "editrecipe"});
     });
   }
 });
@@ -179,11 +181,11 @@ router.get('/delete/:slug', (req, res) => {
         res.redirect('/');
       } else {
         res.redirect('/');
-        throw new Error(response.statusText + " - recipe does not exists");
+        throw new Error(response.statusText);
       }
     })
     .catch(error => {
-      logger.error("(Delete-recipe) " + error.message);
+      logger.error("Problem deleting recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "deleterecipe"});
     });
   }
 });
@@ -213,12 +215,12 @@ router.get('/bookmark/:username/:slug', (req, res) => {
       }
     })
     .catch(error => {
-      logger.error("(Bookmark-recipe) " + error.message);
+      logger.error("Problem bookmarking recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "bookmarkrecipe"});
     })
   }
 });
 
-// home view (my recipes)
+// bookmark view
 router.get('/bookmarks', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login?next=/bookmarks');
@@ -233,14 +235,14 @@ router.get('/bookmarks', (req, res) => {
         return response.json();
       } else {
         res.redirect('/login');
-        throw new Error(response.statusText + " - invalid API key");
+        throw new Error(response.statusText);
       }
     })
     .then(json => {
       res.render('home', {title: "Bookmarked Recipes", recipes: json, shownav: true});
     })
     .catch(error => {
-      logger.error("(View-bookmarks) " + error.message);
+      logger.error("Problem display bookmarks (API key: " + req.session.apikey + ") // " + error.message, {service: "showbookmarks"});
     });
   }  
 });
