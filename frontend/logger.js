@@ -58,6 +58,11 @@ const onlyInfo = winston.format((info, opts) => {
   else { return false; }
 });
 
+const allFailures = winston.format((info, opts) => {
+  if (info.level == 'httpsuccess' || info.level == 'info') { return false; }
+  else { return info; }
+});
+
 //
 // actual winston logger
 //
@@ -131,12 +136,10 @@ var logger = winston.createLogger({
         maxFiles: maxFiles,
       }),
       new winston.transports.Console({
-          level: 'error',
+          level: 'debug',
           handleExceptions: true,
           format: winston.format.combine(
-            onlyHttpError(),
-            onlyError(),
-            onlyWarn(),
+            allFailures(),
             winston.format.cli()
           )
       })
@@ -149,13 +152,13 @@ var logger = winston.createLogger({
 //
 logger.httpsuccess = {
   write: function(message, encoding){
-      logger.log('httpsuccess', message.trim());
+      logger.log('httpsuccess', message.trim(), {service: "morgan"});
   }
 };
 
 logger.httperror = {
   write: function(message, encoding){
-      logger.log('httperror', message.trim());
+      logger.log('httperror', message.trim(), {service: "morgan"});
   }
 };
 
