@@ -12,7 +12,7 @@ router.get('/login', (req, res) => {
 });
 
 // login to API backend
-router.post('/login', (req, res) => { 
+router.post('/login', (req, res) => {
   fetch(C.api_login_url, {
     method: 'POST',
     body: qs.stringify({
@@ -28,11 +28,12 @@ router.post('/login', (req, res) => {
       return response.json();
     } else {
       req.flash('login_msg', 'Invalid login attempt');
-      res.redirect('/login');
-      throw new Error("Login attempt failed for user: " + req.body.username);
+      res.redirect('/login?next=' + req.body.next);
+      throw new Error(response.statusText);
     }
   })
   .then(json => {
+    logger.info("Successful user login for " + req.body.username.toLowerCase(), {service: "login"})
     req.session.apikey = json['token'];
     req.session.save(() => {
       if (req.body.next) {
@@ -43,14 +44,14 @@ router.post('/login', (req, res) => {
     });
   })
   .catch(error => {
-    logger.error("(Login) " + error.message);
+    logger.warn("Login attempt failed for user: " + req.body.username + " // " + error.message, {service: "login"});
   });
 });
 
 // logout
 router.get('/logout', (req, res) => {
   req.session.apikey = null;
-  res.redirect('login');
+  res.redirect('/login');
 });
 
 // register (get)
@@ -74,6 +75,7 @@ router.post('/register', (req, res) => {
   })
   .then(response => {
     if (response.ok) {
+      logger.info("New account created for " + req.body.username.toLowerCase(), {service: "register"})
       req.flash('login_msg', 'Account created!');
       res.redirect('/login');
       // break the promise chain
@@ -84,10 +86,10 @@ router.post('/register', (req, res) => {
   })
   .then(json => {
     res.render('register', {msg: json});
-    throw new Error(json);
+    throw new Error(JSON.stringify(json));
   })
   .catch(error => {
-    logger.error("(Register) " + error.message);
+    logger.warn("Problems registering new account with username (" + req.body.username.toLowerCase() + ") and email (" + req.body.email + ") // " + error.message, {service: "register"});
   });
 });
 
@@ -116,14 +118,14 @@ router.post('/delete_account', (req, res) => {
     }
   })
   .then(json => {
-    logger.info("User " + json.username + " (API key " + req.session.apikey + ") deleted.");
+    logger.info("Deleted account for user " + json.username + " (API key " + req.session.apikey + ")", {service: "delete"});
     req.session.apikey = undefined;
     req.session.save(() => {
       res.redirect('/');
     });
   })
   .catch(error => {
-    logger.error("Delete-account: " + error.message);
+    logger.warn("Problem deleting account (API key: " + req.session.apikey + ") // " + error.message, {service: "delete"});
   })
 });
 
@@ -148,6 +150,7 @@ router.post('/change_password', (req, res) => {
   })
   .then(response => {
     if (response.ok) {
+      logger.info("Password changed for API key " + req.session.apikey, {service: "changepw"})
       req.flash('login_msg', 'Password updated! Please log in again.');
       res.redirect('/logout');
       // break the promise chain
@@ -158,10 +161,10 @@ router.post('/change_password', (req, res) => {
   })
   .then(json => {
     res.render('change_password', {msg: json});
-    throw new Error(json);
+    throw new Error(JSON.stringify(json));
   })
   .catch(error => {
-    logger.error("(Change-password) " + error.message);
+    logger.warn("Problem changing password for API key " + req.session.apikey + " // " + error.message, {service: "changepw"});
   });
 });
 
