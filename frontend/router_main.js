@@ -25,7 +25,13 @@ router.get('/v/:username/:slug', (req, res) => {
     return response.json()
   })
   .then(json => {
-    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug});
+    if (Object.keys(json.ingredients).length > 0) {
+      showhr = true
+    } else {
+      showhr = false
+    }
+    
+    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr});
   })
   .catch(error => {
     logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
