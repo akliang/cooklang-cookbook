@@ -1,6 +1,12 @@
+# overall
 .env
 data/*
+
+# logging
 frontend/logs/*
 !frontend/logs/.gitkeep
+api/logs/*
+!api/logs/.gitkeep
+
+# static
 frontend/static/img/recipes/*
-logs/*
