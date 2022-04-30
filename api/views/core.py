@@ -1,6 +1,7 @@
 import re
 
 from django.http import JsonResponse
+from django.db import IntegrityError
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -38,7 +39,6 @@ class RecipeView(APIView):
       except Bookmark.DoesNotExist:
         bookmarked = False
 
-      # TODO: convert to serializer
       return Response({'title': recipe.title, 'ingredients': proc_recipe['ingredients'], 'recipe': proc_recipe['recipe'], 'edit': edit, 'bookmarked': bookmarked, 'image': recipe.image})
     except Recipe.DoesNotExist:
       logger.info(f"{self.__class__.__name__} - Invalid recipe request for chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
@@ -71,7 +71,7 @@ class MyRecipes(APIView):
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid home page (my recipes list) request for API key {apikey}")
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class MyBookmarks(APIView):
   authentication_classes = [TokenAuthentication]
@@ -86,7 +86,7 @@ class MyBookmarks(APIView):
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid bookmark page request for API key {apikey}")
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class AddRecipe(APIView):
   authentication_classes = [TokenAuthentication]
@@ -102,24 +102,37 @@ class AddRecipe(APIView):
 
     # write the form data to cook file
     if form.is_valid():
-      # build the slug, first remove all non-alphanumeric characters
-      slug = re.sub('[^a-zA-Z0-9 ]', '', form.cleaned_data['title'])
-      slug = re.sub('\s', '-', slug)
-      slug = slug.lower()
+      # if the title hits integrity error, append a number to it and try again... until it works
+      cnt = 0
+      while True:
+        title = form.cleaned_data['title']
 
-      obj = form.save(commit=False)
-      obj.chef = user
-      obj.slug = slug
-      obj.save()
+        if cnt != 0:
+          title = f"{title} {cnt}"
+        print(title)
 
-      return Response({
-        'username': user.username,
-        'slug': slug
-      }, status=status.HTTP_201_CREATED)
+        # build the slug, first remove all non-alphanumeric characters
+        slug = re.sub('[^a-zA-Z0-9 ]', '', title)
+        slug = re.sub('\s', '-', slug)
+        slug = slug.lower()
+
+        obj = form.save(commit=False)
+        obj.chef = user
+        obj.slug = slug
+
+        try:
+          obj.save()
+          return Response({
+            'username': user.username,
+            'slug': slug
+          }, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+          cnt += 1
+          # return Response("Title is same or too similar to another recipe.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid add recipe request for API key {apikey}")
-      return Response(form.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      return Response(form.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 class DeleteRecipe(APIView):
   authentication_classes = [TokenAuthentication]
@@ -135,7 +148,7 @@ class DeleteRecipe(APIView):
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid delete recipe request for API key {apikey}")
-      return Response(status=status.HTTP_400_BAD_REQUEST)
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class BookmarkRecipe(APIView):
   authentication_classes = [TokenAuthentication]
@@ -158,4 +171,4 @@ class BookmarkRecipe(APIView):
       else:
         apikey = parse_apikey_from_header(request)
         logger.warning(f"{self.__class__.__name__} - Invalid bookmark recipe request for API key {apikey}, chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)

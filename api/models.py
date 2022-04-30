@@ -11,7 +11,7 @@ class Recipe(models.Model):
     image = models.CharField(max_length=200, blank=True)
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=['chef', 'title', 'slug'], name='unique_recipe_per_chef')]
+        constraints = [models.UniqueConstraint(fields=['chef', 'slug'], name='unique_slug_per_chef')]
         ordering = ['title']
 
 class Bookmark(models.Model):
