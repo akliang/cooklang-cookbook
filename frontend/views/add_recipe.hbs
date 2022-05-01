@@ -15,11 +15,7 @@
       <textarea class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="recipe" id="recipe" placeholder="Type recipe here" rows=12>{{data.recipe}}</textarea>
     </div>
 
-    {{#if edit}}
-      <input type="hidden" name="edit" id="edit" value="{{data.slug}}">
-    {{else}}
-      <input type="hidden" name="edit" id="edit" value="">
-    {{/if}}
+    <input type="hidden" name="edit" id="edit" value="{{data.slug}}">
 
     <div class="grid grid-cols-3 gap-3 w-full mx-auto">
       {{#if back}}
@@ -107,7 +103,7 @@ theOne = new Dropzone("div#add-recipe", {
           window.location.href = response.url;
         });
 
-        {{#if edit}}
+        {{#if data.image}}
           var mockFile = { name: "recipeimg", size: "1234", accepted: true, type: "image/jpeg" };
           this.files.push(mockFile);
           this.emit("addedfile", mockFile);

@@ -26,12 +26,18 @@ router.get('/v/:username/:slug', (req, res) => {
   })
   .then(json => {
     if (Object.keys(json.ingredients).length > 0) {
-      showhr = true
+      showhr = true;
     } else {
-      showhr = false
+      showhr = false;
+    }
+
+    if (h.loggedIn(req)) {
+      loggedin = true;
+    } else {
+      loggedin = false;
     }
     
-    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr});
+    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin});
   })
   .catch(error => {
     logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
@@ -116,7 +122,6 @@ router.post('/add', upload.single('recipe'), (req, res) => {
       if (response.ok) {
         return response.json();
       } else {
-        // TODO: recipe already exists error
         res.redirect('/login');
         throw new Error(response.statusText);
       }
@@ -163,7 +168,7 @@ router.get('/edit/:username/:slug', (req, res) => {
       }
     })
     .then(json => {
-      res.render('add_recipe', {data: json, edit: true, back: "/v/" + req.params.username + "/" + req.params.slug});
+      res.render('add_recipe', {data: json, back: "/v/" + req.params.username + "/" + req.params.slug});
     })
     .catch(error => {
       logger.error("Problem editing recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "editrecipe"});
