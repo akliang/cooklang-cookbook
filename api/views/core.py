@@ -109,7 +109,6 @@ class AddRecipe(APIView):
 
         if cnt != 0:
           title = f"{title} {cnt}"
-        print(title)
 
         # build the slug, first remove all non-alphanumeric characters
         slug = re.sub('[^a-zA-Z0-9 ]', '', title)
