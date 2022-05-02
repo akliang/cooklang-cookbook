@@ -11,6 +11,44 @@
     <div class="w-full border-2 border-dashed rounded-md mb-2 dropzone" id="add-recipe"></div>
     <div class="w-full mb-2 hidden" id="dropzone-preview"></div>
 
+    <!-- help -->
+    <a onClick="toggleHelpOn()">
+      <div id="help-btn" class="rounded-md bg-slate-300 text-slate-500 text-sm p-2">Instructions</div>
+    </a>
+    <a onClick="toggleHelpOff()">
+      <div id="help" class="hidden">
+        <div class="bg-slate-300 text-slate-500 text-sm p-2 rounded-t-md">Instructions</div>
+        <div class="text-sm border border-slate-300 rounded-b-md p-4 text-left font-mono space-y-5">
+          <p>Each line is a recipe step.</p>
+
+          <p>
+            Mark ingredients by starting with an "@" and ending with "{}"<br />
+            <span class="text-slate-500">Example: cook @chicken legs{} until done</span>
+          </p>
+
+          <p>
+            Denote quantity inside curly braces<br />
+            <span class="text-slate-500">Example: cook @chicken{2 drumsticks} until done</span>
+          </p>
+
+<!--
+          <p>
+            <span class="underline">Voice dictation:</span><br />
+            Voice dictation makes it easier to create recipes on mobile.  Certain keywords are converted into new lines in voice-dict mode and removed from the final recipe:
+          </p>
+          <p>
+            <ul class="list-disc list-inside">
+              <li>First</li>
+              <li>Next</li>
+              <li>Finally</li>
+              <li>And then (auto-removed in final recipe)</li>
+            </ul>
+          </p>
+-->
+        </div>
+      </div>
+    </a>
+
     <div class="w-full mb-2">
       {{> recipeeditor recipe=data.recipe}}
     </div>
@@ -39,6 +77,18 @@
     <img class="rounded-md ml-1" data-dz-thumbnail />
   </div>
 </div>
+
+<script type="text/javascript">
+function toggleHelpOn() {
+  document.getElementById('help-btn').classList.add('hidden');
+  document.getElementById('help').classList.remove('hidden');
+}
+
+function toggleHelpOff() {
+  document.getElementById('help-btn').classList.remove('hidden');
+  document.getElementById('help').classList.add('hidden');
+}
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
 <script type="text/javascript">
