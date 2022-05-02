@@ -263,4 +263,13 @@ router.get('/bookmarks', (req, res) => {
   }  
 });
 
+// import_export (get)
+router.get('/import_export', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/import_export');
+  } else {
+    res.render('import_export');
+  }
+});
+
 module.exports = router;
