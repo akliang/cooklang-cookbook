@@ -12,8 +12,7 @@
     <div class="w-full mb-2 hidden" id="dropzone-preview"></div>
 
     <div class="w-full mb-2">
-<!-- can't have leading white space here or it affects the recipe rendering on edit -->
-{{> recipeeditor recipe=data.recipe}}
+      {{> recipeeditor recipe=data.recipe}}
     </div>
 
     <input type="hidden" name="edit" id="edit" value="{{data.slug}}">
