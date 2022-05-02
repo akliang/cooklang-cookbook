@@ -40,27 +40,32 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - Delete a recipe
 - Upload images
 
-## Todo
-- refactor all get paths to "/<regex>" to wrap in logged-in
-- wrap all API calls to auto-append header?
-- try to refactor API and frontend so they are DRYer (view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
-- extend APIView to something more custom?
+## In progress
+- wysiwyg
 
 
 ## Wishlist
-- wysiwyg
 - auto ingredient highlighting
-- auto-preview recipe
 - image server?
 - coverage
 - separate server/env for testing?
 - AI generate thumbnail image
-- decrease number of API calls (cache all "myrecipes" to local, preferrably all saved recipes too)
+- decrease number of API calls (cache all "myrecipes" to local, preferrably all saved recipes too, view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
 - Cooklang "ingester" to copy-paste cooklang file into db
+- voice dictation parser
 - export account
 - make cookbook PDF
 - make printable cookbook
 - session cookie secure=true
+- "Optional" detection
+- "header" mark in recipes
+- writing tests
+- https://stackoverflow.com/questions/20726174/placeholder-for-contenteditable-div
+- "my ingredients" area?
+- "what can i cook" search feature
+- Invite
+- delete image on recipe delete
+- pre-line whitespace
 
 ## Testing todo
 - selenium test for frontend
@@ -98,7 +103,11 @@ psql -U postgres
 dc logs -f
 ```
 
-## Useful links:
+## Known issues
+- Changing a recipe title changes its slug, which invalidates shared recipe URLs (that aren't bookmarked)
+- Duplicate ingredeint marking gets overridden to the last ingredient value (ideally we would add units together, but that's outside cooklang spec)
+
+## Useful links
 - https://freshman.tech/learn-node/
 - https://waelyasmina.medium.com/a-guide-into-using-handlebars-with-your-express-js-application-22b944443b65
 - https://forum.djangoproject.com/t/how-to-authenticate-django-rest-framework-api-calls-from-a-vue-js-client-using-session-authentication-and-httponly-cookies/5422
