@@ -42,6 +42,8 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 
 ## In progress
 - wysiwyg
+- on edit, photo disappears
+- clean up orphan photos
 
 
 ## Wishlist
@@ -60,12 +62,10 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - "Optional" detection
 - "header" mark in recipes
 - writing tests
-- https://stackoverflow.com/questions/20726174/placeholder-for-contenteditable-div
 - "my ingredients" area?
 - "what can i cook" search feature
 - Invite
 - delete image on recipe delete
-- pre-line whitespace
 
 ## Testing todo
 - selenium test for frontend
@@ -119,6 +119,8 @@ dc logs -f
 - https://www.sitepoint.com/file-upload-form-express-dropzone-js/
 - https://stackoverflow.com/questions/20533191/dropzone-js-client-side-image-resizing
 - https://github.com/sitepoint-editors/image-uploads-dropzonejs-node-express
+- https://stackoverflow.com/questions/20726174/placeholder-for-contenteditable-div
+- https://stackoverflow.com/questions/52837460/serve-static-file-from-different-server-express-js
 
 
 
