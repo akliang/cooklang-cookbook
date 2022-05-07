@@ -49,39 +49,13 @@ router.get('/v/:username/:slug', (req, res) => {
 //
 // PROTECTED ROUTES
 //
-// home view (my recipes)
-router.get('/', (req, res) => {
-  if (!h.loggedIn(req)) {
-    res.redirect('/login');
-  } else {
-    fetch(C.api_viewrecipes_url, {
-      headers: {
-        "Authorization": "token " + req.session.apikey
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        res.redirect('/login');
-        throw new Error(response.statusText);
-      }
-    })
-    .then(json => {
-      res.render('home', {title: "My Recipes", recipes: json, msg: req.flash('home_msg'), shownav: true, showadd: true});
-    })
-    .catch(error => {
-      logger.error("Problem loading home screen (API key: " + req.session.apikey + ") // " + error.message, {service: "home"});
-    });
-  }  
-});
-
 // add recipe (get)
 router.get('/add', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login?next=/add');
   } else {
-    res.render('add_recipe');
+    //res.render('add_recipe_standard');
+    res.render('add_recipe_desktop');
   }
 });
 
@@ -168,7 +142,7 @@ router.get('/edit/:username/:slug', (req, res) => {
       }
     })
     .then(json => {
-      res.render('add_recipe', {data: json, back: "/v/" + req.params.username + "/" + req.params.slug});
+      res.render('add_recipe_desktop', {data: json, back: "/v/" + req.params.username + "/" + req.params.slug});
     })
     .catch(error => {
       logger.error("Problem editing recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "editrecipe"});
@@ -233,42 +207,6 @@ router.get('/bookmark/:username/:slug', (req, res) => {
     .catch(error => {
       logger.error("Problem bookmarking recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "bookmarkrecipe"});
     })
-  }
-});
-
-// bookmark view
-router.get('/bookmarks', (req, res) => {
-  if (!h.loggedIn(req)) {
-    res.redirect('/login?next=/bookmarks');
-  } else {
-    fetch(C.api_viewbookmarkrecipes_url, {
-      headers: {
-        "Authorization": "token " + req.session.apikey
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        res.redirect('/login');
-        throw new Error(response.statusText);
-      }
-    })
-    .then(json => {
-      res.render('home', {title: "Bookmarked Recipes", recipes: json, shownav: true});
-    })
-    .catch(error => {
-      logger.error("Problem display bookmarks (API key: " + req.session.apikey + ") // " + error.message, {service: "showbookmarks"});
-    });
-  }  
-});
-
-// import_export (get)
-router.get('/import_export', (req, res) => {
-  if (!h.loggedIn(req)) {
-    res.redirect('/login?next=/import_export');
-  } else {
-    res.render('import_export');
   }
 });
 
