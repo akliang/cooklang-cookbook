@@ -14,5 +14,6 @@ urlpatterns = [
   path('add/', views.AddRecipe.as_view(), name='add_recipe'),
   path('delete/', views.DeleteRecipe.as_view(), name='delete_recipe'),
   path('bookmark/', views.BookmarkRecipe.as_view(), name='bookmark_recipe'),
-  path('view_bookmarks/', views.MyBookmarks.as_view(), name='my_bookmarks')
+  path('view_bookmarks/', views.MyBookmarks.as_view(), name='my_bookmarks'),
+  # path('export/', views.ExportRecipes.as_view(), name='export_recipes'),
 ]

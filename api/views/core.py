@@ -1,6 +1,9 @@
 import re
+import zipfile
+import tempfile
+from pathlib import Path
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db import IntegrityError
 
 from rest_framework import status
@@ -171,3 +174,21 @@ class BookmarkRecipe(APIView):
         apikey = parse_apikey_from_header(request)
         logger.warning(f"{self.__class__.__name__} - Invalid bookmark recipe request for API key {apikey}, chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+# class ExportRecipes(APIView):
+#   authentication_classes = [TokenAuthentication]
+#   permission_classes = [IsAuthenticated]
+
+#   def post(self, request, *args, **kw):
+#     user = lookup_user_by_api(request)
+#     recipeset = Recipe.objects.filter(chef=user)
+    
+#     # start the zipfile handle
+#     response = HttpResponse(content_type='application/zip')
+#     zf = zipfile.ZipFile(response, 'w')
+#     for recipe in recipeset:
+#         cl_recipe = f">> Title: {recipe.title}\n\n{recipe.recipe}"
+#         zf.writestr(recipe.slug, cl_recipe)
+
+#     response['Content-Disposition'] = f'attachment; filename=testing.zip'
+#     return response
