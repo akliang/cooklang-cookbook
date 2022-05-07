@@ -41,8 +41,10 @@ app.set('views', './views');
 // routes
 const router_auth = require('./router_auth');
 const router_main = require('./router_main');
+const router_others = require('./router_others');
 app.use(router_auth);
 app.use(router_main);
+app.use(router_others);
 
 // the 404 catch
 app.use(function(req, res, next) {
