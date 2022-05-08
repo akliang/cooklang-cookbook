@@ -12,6 +12,7 @@ urlpatterns = [
   path('view_by_token/', views.GetRecipeWithToken.as_view(), name='get_recipe_with_token'),
   path('view/', views.MyRecipes.as_view(), name='my_recipes'),
   path('add/', views.AddRecipe.as_view(), name='add_recipe'),
+  path('add_desktop/', views.AddRecipeDesktop.as_view(), name='add_recipe'),
   path('delete/', views.DeleteRecipe.as_view(), name='delete_recipe'),
   path('bookmark/', views.BookmarkRecipe.as_view(), name='bookmark_recipe'),
   path('view_bookmarks/', views.MyBookmarks.as_view(), name='my_bookmarks'),

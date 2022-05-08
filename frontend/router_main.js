@@ -90,6 +90,8 @@ router.post('/add', upload.single('recipe'), (req, res) => {
         'recipe': req.body.recipe,
         'edit': req.body.edit,
         'image': image_filename,
+        'ingredientname': req.body.ingredientname,
+        'ingredientqty': req.body.ingredientqty,
       })
     })
     .then(response => {

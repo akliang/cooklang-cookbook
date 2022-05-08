@@ -20,7 +20,8 @@
     <div id="ingredientlistbutton2" class="rounded-t-md bg-green-200 text-sm p-3 cursor-pointer hidden">Ingredients List</div>
 </a>
 <div id="ingredientlist" class="rounded-b-md text-sm border border-green-200 p-3 hidden">
-    <span id="ingredientslistplaceholder">No ingredients!</span>
+    <span id="ingredientslistplaceholder1">No ingredients!</span>
+    <span id="ingredientslistplaceholder2" class="text-slate-500 italic hidden">Quantity is optional</span>
     <table id="ingredientstable" class="w-full table-fixed"></table>
 </div>
 
@@ -44,8 +45,8 @@
 const editmenu = document.getElementById("editmenu");
 var ingredientslist = [];
 const ingredientstable = document.getElementById("ingredientstable");
-const ingredientslistplaceholder = document.getElementById("ingredientslistplaceholder");
-var spanObj;
+const ingredientslistplaceholder1 = document.getElementById("ingredientslistplaceholder1");
+const ingredientslistplaceholder2 = document.getElementById("ingredientslistplaceholder2");
 
 
 // ingredient list toggle
@@ -64,68 +65,35 @@ function toggleIngredientsListOff() {
 
 // wysiwyg logic
 function checkHighlight(e) {
-    // this order is important - check the span:hover first before generally checking for highlighted text
-    // this way, the correct menu shows up if you highlight the spanned text
-    if (document.querySelectorAll( "span:hover" ).length > 0 && document.querySelectorAll( "span:hover" )[0].classList.contains("ingredient")) {
-        // point to global var to the current span tag
-        spanObj = document.querySelectorAll( "span:hover" )[0];
-
-        editmenu.classList.remove("bg-slate-300");
-        editmenu.classList.add("bg-green-400");
-        editmenu.style.left = e.pageX + "px";
-        editmenu.style.top = e.pageY + "px";
-        editmenu.classList.remove("hidden");
-    } else if (window.getSelection().toString()) {
-        spanObj = null;
-
-        editmenu.classList.add("bg-slate-300");
-        editmenu.classList.remove("bg-green-400");
+    if (window.getSelection().toString()) {
         editmenu.style.left = e.pageX + "px";
         editmenu.style.top = e.pageY + "px";
         editmenu.classList.remove("hidden");
     } else {
-        spanObj = null;
-
         // hide context menu
         editmenu.classList.add("hidden");
     }
 }
 
 function setIngredient() {
+    // TODO: trim white space on API backend from beginning and end of ingredient
     var highlighted_text = window.getSelection().toString();
-    
-    if (spanObj) {
-        // this means it's an existing ingredient
-        // remove the ingredient from the list
-        var index = ingredientslist.indexOf(highlighted_text);
-        ingredientslist.splice(index, 1);
-        console.log(ingredientslist);
 
-        // move the text outside of the span and then delete the span
-        var parent = spanObj.parentNode;
-        spanObj.outerHTML = spanObj.innerHTML;
-        // TODO: this throws error "node to be removed is not child of this node"... but it works anyway?
-        // it's creating empty spans... try trimming white space?
-        // https://stackoverflow.com/questions/37025488/remove-whitespace-from-window-selection-in-js
-        parent.removeChild(spanObj);
-    } else {
-        // this means we're highlighting new text
-        // add the ingredient to the list if it's new
-        if (!ingredientslist.includes(highlighted_text)) {
-            ingredientslist.push(highlighted_text);
-            console.log(ingredientslist);
-        }
-
-        // extract the text string and shove it into a span
-        var selection = window.getSelection().getRangeAt(0);
-        var selected_text = selection.extractContents();
-        var span = document.createElement("span");
-        span.classList.add("ingredient", "text-green-500");
-        span.id = selected_text;
-        span.appendChild(selected_text);
-        selection.insertNode(span);
-        window.getSelection().removeAllRanges();
+    // this means we're highlighting new text
+    // add the ingredient to the list if it's new
+    if (!ingredientslist.includes(highlighted_text)) {
+        ingredientslist.push(highlighted_text);
     }
+
+    // extract the text string and shove it into a span
+    var selection = window.getSelection().getRangeAt(0);
+    var selected_text = selection.extractContents();
+    var span = document.createElement("span");
+    span.classList.add("ingredient", "text-green-500");
+    //span.id = selected_text;
+    span.appendChild(selected_text);
+    selection.insertNode(span);
+    window.getSelection().removeAllRanges();
 
     // re-render the ingredients table
     populateIngredientsTable();
@@ -134,8 +102,27 @@ function setIngredient() {
     editmenu.classList.add("hidden");
 }
 
+function removeIngredient(ingredient) {
+    // pop the ingredient off the list
+    var index = ingredientslist.indexOf(ingredient);
+    if (index !== -1) {
+        ingredientslist.splice(index, 1);
+    }
+
+    // scan all the ingredient spans until we find the one that matches
+    allSpans = document.getElementsByClassName("ingredient");
+    Array.from(allSpans).forEach(span => {
+        if (span.innerText == ingredient) {
+            span.outerHTML = span.innerHTML;
+            span.remove();
+        }
+    });
+
+    // re-render the ingredients table
+    populateIngredientsTable();
+}
+
 function populateIngredientsTable() {
-    console.log("Rendering table...")
     // drop all table rows
     ingredientstable.textContent = "";
 
@@ -145,7 +132,7 @@ function populateIngredientsTable() {
         var tdLeft = document.createElement("td");
         tdLeft.classList.add("text-right", "p-2");
         var tdRight = document.createElement("td");
-        tdRight.classList.add("p-2");
+        tdRight.classList.add("text-left", "p-2");
 
         var fieldLabel = document.createElement("span");
         fieldLabel.classList.add("text-sm", "text-green-500")
@@ -155,25 +142,33 @@ function populateIngredientsTable() {
         var fieldQty = document.createElement("input");
         fieldQty.setAttribute("type", "text");
         fieldQty.setAttribute("name", "ingredientqty[]");
-        fieldQty.setAttribute("placeholder", "(Optional) quantity");
-        fieldQty.classList.add("w-full", "border-0", "text-sm");
+        fieldQty.setAttribute("placeholder", "Qty");
+        fieldQty.classList.add("w-1/2", "border-0", "text-sm", "mr-2");
         tdRight.appendChild(fieldQty);
+        var removeBtn = document.createElement("a");
+        removeBtn.setAttribute("onClick", "removeIngredient('" + ingredient + "')");
+        removeBtn.innerText = "X";
+        removeBtn.classList.add("hover:text-red-300", "hover:cursor-pointer")
+        tdRight.appendChild(removeBtn);
         var fieldName = document.createElement("input");
         fieldName.setAttribute("type", "hidden");
         fieldName.setAttribute("name", "ingredientname[]");
         fieldName.setAttribute("value", ingredient);
         tdRight.appendChild(fieldName);
 
+
         tr.appendChild(tdLeft);
         tr.appendChild(tdRight);
         ingredientstable.appendChild(tr); 
     });
 
-    // hide the placeholder text
+    // toggle the placeholder text
     if (ingredientstable.childElementCount == 0) {
-        ingredientslistplaceholder.classList.remove("hidden");
+        ingredientslistplaceholder1.classList.remove("hidden");
+        ingredientslistplaceholder2.classList.add("hidden");
     } else {
-        ingredientslistplaceholder.classList.add("hidden");
+        ingredientslistplaceholder1.classList.add("hidden");
+        ingredientslistplaceholder2.classList.remove("hidden");
     }
 }
 

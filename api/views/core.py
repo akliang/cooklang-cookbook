@@ -91,6 +91,7 @@ class MyBookmarks(APIView):
       logger.warning(f"{self.__class__.__name__} - Invalid bookmark page request for API key {apikey}")
       return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+# TODO: convert this to cooklang ingester
 class AddRecipe(APIView):
   authentication_classes = [TokenAuthentication]
   permission_classes = [IsAuthenticated]
@@ -131,6 +132,80 @@ class AddRecipe(APIView):
         except IntegrityError:
           cnt += 1
           # return Response("Title is same or too similar to another recipe.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+      apikey = parse_apikey_from_header(request)
+      logger.warning(f"{self.__class__.__name__} - Invalid add recipe request for API key {apikey}")
+      return Response(form.errors, status=status.HTTP_401_UNAUTHORIZED)
+
+class AddRecipeDesktop(APIView):
+  authentication_classes = [TokenAuthentication]
+  permission_classes = [IsAuthenticated]
+
+  def post(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+
+    # rebuild the ingredientname and ingredientqty arrays
+    # (they get broken up by expressJS... not sure how to fix it right now)
+    ingredients = {}
+    for val in request.POST:
+      if 'ingredientname' in val:
+        # strip whitespace from the ingredient
+        ingredientname = request.POST[val].lstrip()
+        ingredientname = ingredientname.rstrip()
+
+        # find and format the ingredient quantity
+        idx = val.replace('ingredientname[', '')
+        idx = idx.replace(']', '')
+        ingredientqty = request.POST[f"ingredientqty[{idx}]"]
+        # replace the first whitespace with percent sign (per cooklang spec)
+        ingredientqty = ingredientqty.replace(" ", "%", 1)
+
+        ingredients[ingredientname] = ingredientqty
+
+    # make a copy of request.POST so it's mutable (need to modify "recipe")
+    post = request.POST.copy()
+
+    # parse through all the ingredients and cooklang-decorate the recipe
+    for ingredientname, ingredientqty in ingredients.items():
+      print(ingredientname)
+      # find first instance of ingredient in the recipe
+      post['recipe'] = post['recipe'].replace(ingredientname, f"@{ingredientname}{{{ingredientqty}}}", 1)
+
+    # validate the recipe structure
+    if post.get('edit'):
+      recipe = Recipe.objects.get(slug=post.get('edit'), chef=user)
+      form = RecipeForm(post, instance=recipe)
+    else:
+      form = RecipeForm(post)
+
+    # write the form data to cook file
+    if form.is_valid():
+      # if the slug hits integrity error, append a number to title and try again... until it works
+      cnt = 1
+      while True:
+        title = form.cleaned_data['title']
+
+        # don't want to append the number on first try
+        if cnt != 1:
+          title = f"{title} {cnt}"
+
+        # build the slug, first remove all non-alphanumeric characters
+        slug = re.sub('[^a-zA-Z0-9 ]', '', title)
+        slug = re.sub('\s', '-', slug)
+        slug = slug.lower()
+
+        obj = form.save(commit=False)
+        obj.chef = user
+        obj.slug = slug
+
+        try:
+          obj.save()
+          return Response({
+            'username': user.username,
+            'slug': slug
+          }, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+          cnt += 1
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid add recipe request for API key {apikey}")
