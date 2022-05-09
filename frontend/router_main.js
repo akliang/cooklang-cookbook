@@ -55,7 +55,7 @@ router.get('/add', (req, res) => {
     res.redirect('/login?next=/add');
   } else {
     //res.render('add_recipe_standard');
-    res.render('add_recipe_desktop');
+    res.render('add_recipe');
   }
 });
 
@@ -67,7 +67,10 @@ router.post('/add', upload.single('recipe'), (req, res) => {
   } else {
     // first, save the image
     var image_filename = undefined;
-    if (req.file) {
+    var dropzone_redirect = false;
+    if (req.body.existingimage) {
+      image_filename = req.body.existingimage;
+    } else if (req.file) {
       sharp(req.file.path)
       .resize(600, 1200, {fit: 'inside'})
       .jpeg({quality: 90})
@@ -76,7 +79,8 @@ router.post('/add', upload.single('recipe'), (req, res) => {
         fs.unlinkSync(req.file.path);
       });
       image_filename = req.file.filename;
-    }    
+      dropzone_redirect = true;
+    }
 
     // next, save the recipe in the API
     fetch(C.api_addrecipe_url, {
@@ -104,7 +108,7 @@ router.post('/add', upload.single('recipe'), (req, res) => {
     })
     .then(json => {
       // Dropzone can't use the res.redirect() return, so send it the URL href to redirect to manually
-      if (image_filename) {
+      if (dropzone_redirect) {
         res.send({
           status: true,
           url: '/v/' + json.username + '/' + json.slug,
@@ -144,7 +148,7 @@ router.get('/edit/:username/:slug', (req, res) => {
       }
     })
     .then(json => {
-      res.render('add_recipe_desktop', {data: json, back: "/v/" + req.params.username + "/" + req.params.slug});
+      res.render('add_recipe', {data: json, back: "/v/" + req.params.username + "/" + req.params.slug});
     })
     .catch(error => {
       logger.error("Problem editing recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "editrecipe"});
