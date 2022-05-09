@@ -2,9 +2,9 @@
 
 The goal of the project is to create a lightweight and intelligent personal recipe cookbook.  Recipes are not searchable or browsable publicly.  This decreases the pressure to create "perfect" recipes and photos and frees the chef up to just write.  It's more important to organize all the recipes into one place than it is to make it Intagram-worthy.  Direct links to recipes can be shared publicly and can be bookmarked by others, though.
 
-The underlying cookbook language is [cooklang](https://cooklang.org/).  This is a very simple markup language without too many syntax rules to learn and remember.  However, this project does NOT follow cooklang's implementation to the letter.  Notable differences include:
+The underlying Cookbook language is [cooklang](https://cooklang.org/).  This is a very simple markup language without too many syntax rules to learn and remember.  However, this project does NOT follow cooklang's implementation to the letter.  Notable differences include:
 - a self-written Python parser instead of the [official Python Parser](https://github.com/cooklang/cooklang-py)
-- only implementing the ingredients ("@") syntax, but dropping support for cookware ("#"), timers ("~"), meta (">>"), and comments ("--")
+- only implementing the ingredients (`@`) syntax, but dropping support for cookware (`#`), timers (`~`), meta (`>>`), and comments (`--`)
 - probably does not support the shopping list feature (did not explicitly test)
 - built based on Postgres db instead of the `.cook` flat-file system
 
@@ -41,9 +41,6 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - Upload images
 
 ## In progress
-- wysiwyg
-- on edit, photo disappears
-- clean up orphan photos
 
 
 ## Wishlist
@@ -66,6 +63,11 @@ The underlying cookbook language is [cooklang](https://cooklang.org/).  This is 
 - "what can i cook" search feature
 - Invite
 - delete image on recipe delete
+- clean up orphan photos
+- upgrade photos to be insertable in recipe?
+- make a chef profile public toggle and bookmarkable
+- don't submit recipe if title is blank
+- dynamic recipeeditor based on desktop/mobile (https://stackoverflow.com/questions/31905684/dynamic-partial-in-handlebars)
 
 ## Testing todo
 - selenium test for frontend
@@ -105,7 +107,8 @@ dc logs -f
 
 ## Known issues
 - Changing a recipe title changes its slug, which invalidates shared recipe URLs (that aren't bookmarked)
-- Duplicate ingredeint marking gets overridden to the last ingredient value (ideally we would add units together, but that's outside cooklang spec)
+- Duplicate ingredient marking gets overridden to the last ingredient value (ideally we would add units together, but that's outside cooklang spec)
+- In WYSIWYG, if you screw with highlighting overlapping ingredients too much, you'll break it (please don't do that...) - possible fixes: Range.commonAncestorContainer or Selection.containsNode()
 
 ## Useful links
 - https://freshman.tech/learn-node/
