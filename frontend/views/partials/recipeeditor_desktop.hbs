@@ -42,6 +42,7 @@
 
 <script type="text/javascript">
 // global objects
+const container = document.getElementById("recipeeditor");
 const editmenu = document.getElementById("editmenu");
 var ingredientslist = {};
 const ingredientstable = document.getElementById("ingredientstable");
@@ -65,14 +66,16 @@ function toggleIngredientsListOff() {
 
 // wysiwyg logic
 function checkHighlight(e) {
+    // only show the edit menu if there is highlighted text
     if (window.getSelection().toString()) {
         editmenu.style.left = e.pageX + "px";
         editmenu.style.top = e.pageY + "px";
         editmenu.classList.remove("hidden");
-    } else {
-        // hide context menu
-        editmenu.classList.add("hidden");
     }
+}
+
+function hideEditMenu() {
+    editmenu.classList.add("hidden");
 }
 
 function setIngredient() {
@@ -183,9 +186,12 @@ function saveIngredientQty() {
 }
 
 // event listeners
-document.onmouseup = checkHighlight;
+// order matters - document always hides the menu onmousedown then container (potentially) reveals it again onmouseup
+document.onmousedown = hideEditMenu;
+container.onmouseup = checkHighlight;
 editmenu.onmousedown = setIngredient;
 ingredientstable.oninput = saveIngredientQty;
 </script>
+
 
 
