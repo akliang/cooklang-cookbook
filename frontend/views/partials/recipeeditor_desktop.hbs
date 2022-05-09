@@ -43,7 +43,7 @@
 <script type="text/javascript">
 // global objects
 const editmenu = document.getElementById("editmenu");
-var ingredientslist = [];
+var ingredientslist = {};
 const ingredientstable = document.getElementById("ingredientstable");
 const ingredientslistplaceholder1 = document.getElementById("ingredientslistplaceholder1");
 const ingredientslistplaceholder2 = document.getElementById("ingredientslistplaceholder2");
@@ -76,13 +76,11 @@ function checkHighlight(e) {
 }
 
 function setIngredient() {
-    // TODO: trim white space on API backend from beginning and end of ingredient
     var highlighted_text = window.getSelection().toString();
 
-    // this means we're highlighting new text
     // add the ingredient to the list if it's new
-    if (!ingredientslist.includes(highlighted_text)) {
-        ingredientslist.push(highlighted_text);
+    if (!ingredientslist.hasOwnProperty(highlighted_text)) {
+        ingredientslist[highlighted_text] = '';
     }
 
     // extract the text string and shove it into a span
@@ -104,10 +102,7 @@ function setIngredient() {
 
 function removeIngredient(ingredient) {
     // pop the ingredient off the list
-    var index = ingredientslist.indexOf(ingredient);
-    if (index !== -1) {
-        ingredientslist.splice(index, 1);
-    }
+    delete ingredientslist[ingredient];
 
     // scan all the ingredient spans until we find the one that matches
     allSpans = document.getElementsByClassName("ingredient");
@@ -127,22 +122,31 @@ function populateIngredientsTable() {
     ingredientstable.textContent = "";
 
     // add each ingredient as a row
-    ingredientslist.forEach(ingredient => {
+    for (let [ingredient, qty] of Object.entries(ingredientslist)) {
+        // set up table elements
         var tr = document.createElement("tr");
         var tdLeft = document.createElement("td");
         tdLeft.classList.add("text-right", "p-2");
         var tdRight = document.createElement("td");
         tdRight.classList.add("text-left", "p-2");
 
+        // create left-td
         var fieldLabel = document.createElement("span");
         fieldLabel.classList.add("text-sm", "text-green-500")
         fieldLabel.innerHTML = ingredient;
         tdLeft.appendChild(fieldLabel);
+        var fieldName = document.createElement("input");
+        fieldName.setAttribute("type", "hidden");
+        fieldName.setAttribute("name", "ingredientname[]");
+        fieldName.setAttribute("value", ingredient);
+        tdLeft.appendChild(fieldName);
 
+        // create right-td
         var fieldQty = document.createElement("input");
         fieldQty.setAttribute("type", "text");
         fieldQty.setAttribute("name", "ingredientqty[]");
         fieldQty.setAttribute("placeholder", "Qty");
+        fieldQty.setAttribute("value", qty);
         fieldQty.classList.add("w-1/2", "border-0", "text-sm", "mr-2");
         tdRight.appendChild(fieldQty);
         var removeBtn = document.createElement("a");
@@ -150,17 +154,12 @@ function populateIngredientsTable() {
         removeBtn.innerText = "X";
         removeBtn.classList.add("hover:text-red-300", "hover:cursor-pointer")
         tdRight.appendChild(removeBtn);
-        var fieldName = document.createElement("input");
-        fieldName.setAttribute("type", "hidden");
-        fieldName.setAttribute("name", "ingredientname[]");
-        fieldName.setAttribute("value", ingredient);
-        tdRight.appendChild(fieldName);
-
-
+        
+        // attach to DOM
         tr.appendChild(tdLeft);
         tr.appendChild(tdRight);
         ingredientstable.appendChild(tr); 
-    });
+    };
 
     // toggle the placeholder text
     if (ingredientstable.childElementCount == 0) {
@@ -172,9 +171,21 @@ function populateIngredientsTable() {
     }
 }
 
+function saveIngredientQty() {
+    allTrs = document.getElementsByTagName("tr");
+    Array.from(allTrs).forEach(tr => {
+        let tds = tr.childNodes;
+        // grab the value from hidden field rather than innerText of span field because innerText strips white space and makes a new key in ingredientlist
+        ingredient = tds[0].lastChild.value;
+        qty = tds[1].firstChild.value;
+        ingredientslist[ingredient] = qty;
+    });
+}
+
 // event listeners
 document.onmouseup = checkHighlight;
 editmenu.onmousedown = setIngredient;
+ingredientstable.oninput = saveIngredientQty;
 </script>
 
 
