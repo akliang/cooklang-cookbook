@@ -11,3 +11,7 @@ exports.api_deleterecipe_url = api_url + '/delete/';
 exports.api_bookmarkrecipe_url = api_url + '/bookmark/';
 exports.api_viewbookmarkrecipes_url = api_url + '/view_bookmarks/';
 //exports.api_exportrecipes_url = api_url + '/export/';
+
+exports.cloudfront_url = process.env.CLOUDFRONT_URL;
+exports.image_style = "fit-in";
+exports.image_size = "600x1200";

@@ -6,10 +6,22 @@ const C = require('./constants');
 const logger = require('./logger');
 const h = require('./helpers');
 const multer  = require('multer');
-const upload = multer({ dest: 'static/img/' });
-const path = require('path');
-const fs = require('fs');
-const sharp = require('sharp');
+const multerS3  = require('multer-s3');
+const aws = require('aws-sdk');
+
+// multer and AWS S3 setup
+aws.config.update({
+  region: process.env.S3_LOCATION
+});
+s3 = new aws.S3();
+
+var upload = multer({
+  storage: multerS3({
+      s3: s3,
+      bucket: process.env.S3_BUCKET_NAME,
+  })
+});
+
 
 //
 // UNPROTECTED ROUTES
@@ -36,8 +48,14 @@ router.get('/v/:username/:slug', (req, res) => {
     } else {
       loggedin = false;
     }
+
+    if (json.image) {
+      img_url = C.cloudfront_url + "/" + C.image_style + "/" + C.image_size + "/" + json.image;
+    } else {
+      img_url = C.cloudfront_url + "/" + C.image_style + "/" + C.image_size + "/cutting_board.jpg";
+    }
     
-    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin});
+    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin, img_url: img_url});
   })
   .catch(error => {
     logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
@@ -71,14 +89,7 @@ router.post('/add', upload.single('recipe'), (req, res) => {
     if (req.body.existingimage) {
       image_filename = req.body.existingimage;
     } else if (req.file) {
-      sharp(req.file.path)
-      .resize(600, 1200, {fit: 'inside'})
-      .jpeg({quality: 90})
-      .toFile(path.resolve(req.file.destination, 'recipes', req.file.filename + '.jpg'))
-      .then(() => {
-        fs.unlinkSync(req.file.path);
-      });
-      image_filename = req.file.filename;
+      image_filename = req.file.key;
       dropzone_redirect = true;
     }
 
