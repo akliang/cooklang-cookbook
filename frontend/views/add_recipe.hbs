@@ -2,6 +2,8 @@
 {{> logo}}
 
 <div class="w-2/3 mx-auto">
+  <div class="text-sm text-red-500 mb-5" id="msg"></div>
+
   <!-- help -->
   {{> help_desktop}}
 
@@ -33,7 +35,7 @@
         </div>
       </a>
       <div class="col-span-2">
-        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md cursor-pointer" type="submit" value="Save" id="submit-recipe">
+        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md cursor-pointer" type="button" value="Save" id="submit-recipe">
       </div>
     </div>
   </form>
@@ -78,11 +80,19 @@ theOne = new Dropzone("div#add-recipe", {
           // move the recipeeditor content into the textarea
           document.getElementById("recipe").value = document.getElementById("recipeeditor").innerText;
 
-          if (myDropzone.getQueuedFiles().length > 0) {
-            // Make sure that the form isn't actually being sent.
-            e.preventDefault();
-            e.stopPropagation();
-            myDropzone.processQueue();
+          // block submission if the title field is empty
+          if (!document.getElementById("title").value) {
+            document.getElementById("msg").innerText = "Title is required.";
+          } else {
+            if (myDropzone.getQueuedFiles().length > 0) {
+              // Make sure that the form isn't actually being sent.
+              e.preventDefault();
+              e.stopPropagation();
+              myDropzone.processQueue();
+            } else {
+              // if there are no photos, then manually submit the form
+              document.getElementById("add-recipe-form").submit();
+            }
           }
         });
 
@@ -108,6 +118,7 @@ theOne = new Dropzone("div#add-recipe", {
         });
 
         this.on("sending", function(data, xhr, formData) {
+
           formData.append("title", document.getElementById("title").value);
           formData.append("recipe", document.getElementById("recipe").value);
           formData.append("edit", document.getElementById("edit").value);
