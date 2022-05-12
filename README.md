@@ -41,11 +41,11 @@ The underlying Cookbook language is [cooklang](https://cooklang.org/).  This is 
 - Upload images
 
 ## In progress
+- move S3 env into constants.js?
 
 
 ## Wishlist
 - auto ingredient highlighting
-- image server?
 - coverage
 - separate server/env for testing?
 - AI generate thumbnail image
@@ -66,8 +66,8 @@ The underlying Cookbook language is [cooklang](https://cooklang.org/).  This is 
 - clean up orphan photos
 - upgrade photos to be insertable in recipe?
 - make a chef profile public toggle and bookmarkable
-- don't submit recipe if title is blank
 - dynamic recipeeditor based on desktop/mobile (https://stackoverflow.com/questions/31905684/dynamic-partial-in-handlebars)
+
 
 ## Testing todo
 - selenium test for frontend
@@ -124,6 +124,8 @@ dc logs -f
 - https://github.com/sitepoint-editors/image-uploads-dropzonejs-node-express
 - https://stackoverflow.com/questions/20726174/placeholder-for-contenteditable-div
 - https://stackoverflow.com/questions/52837460/serve-static-file-from-different-server-express-js
+- https://blog.stefanolaru.com/on-the-fly-image-resizing-with-aws-lambda-s3-and-cloudfront#lambda-api-gateway
+- https://medium.com/@antoniosito/deploy-a-robust-image-handling-resizing-solution-in-minutes-on-aws-512ac04093d7
 
 
 
