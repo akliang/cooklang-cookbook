@@ -22,9 +22,6 @@ services:
       - .:/code
     ports:
       - "8002:8002"
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_USER=postgres
     depends_on:
       - db
   frontend:
