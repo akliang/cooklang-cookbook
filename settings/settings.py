@@ -33,7 +33,7 @@ DEBUG = env('DJANGO_DEBUG')
 ALLOWED_HOSTS = [
   'localhost',
   '127.0.0.1',
-  'albertliang.xyz'
+  env('DOMAIN_NAME')
 ]
 
 
