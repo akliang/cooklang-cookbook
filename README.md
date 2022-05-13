@@ -8,131 +8,19 @@ The underlying Cookbook language is [cooklang](https://cooklang.org/).  This is 
 - probably does not support the shopping list feature (did not explicitly test)
 - built based on Postgres db instead of the `.cook` flat-file system
 
-## User story
-- Login (get redirected with proper "next" param)
-  - failed login (preserve "next" param)
-- Logout
-- Register account
-  - email already registered
-  - username already registered
-  - password not long enough
-  - passwords don't match
-- Change password (and API token invalidation on pw change)
-  - password not long enough
-  - passwords don't match
-  - password changed successfully (redirect to login with msg)
-- Delete account
-- View a recipe
-  - save as bookmark
-  - share
-- View all my recipes
-- Share a recipe
-- Bookmark a recipe
-- View bookmarked recipes
-- Add a recipe
-  - title not unique
-  - image size too large
-  - can only upload 1 image
-- Edit a recipe
-  - title not unique
-  - image size too large
-  - can only upload 1 image
-- Delete a recipe
-- Upload images
+# Installation
 
-## In progress
-- move S3 env into constants.js?
-
-
-## Wishlist
-- auto ingredient highlighting
-- coverage
-- separate server/env for testing?
-- AI generate thumbnail image
-- decrease number of API calls (cache all "myrecipes" to local, preferrably all saved recipes too, view recipe and edit recipe make same API hit, add recipe and edit recipe are very similar)
-- Cooklang "ingester" to copy-paste cooklang file into db
-- voice dictation parser
-- export account
-- make cookbook PDF
-- make printable cookbook
-- session cookie secure=true
-- "Optional" detection
-- "header" mark in recipes
-- writing tests
-- "my ingredients" area?
-- "what can i cook" search feature
-- Invite
-- delete image on recipe delete
-- clean up orphan photos
-- upgrade photos to be insertable in recipe?
-- make a chef profile public toggle and bookmarkable
-- dynamic recipeeditor based on desktop/mobile (https://stackoverflow.com/questions/31905684/dynamic-partial-in-handlebars)
-
-
-## Testing todo
-- selenium test for frontend
-- fix cooklang tests
-- refactor api tests for DRF style endpoints
-
-## Development
+The code is organized around a couple of Docker containers, so all you'll have to do after you clone the repo is:
 ```
-# installing a new package to frontend
-dc run -u root frontend npm install <package_name>
-# have to run build with --no-cache to pick up the updated package.json
-dc build --no-cache frontend
-# sometimes docker-compose up uses the old container or image, so prune everything
-docker container prune
-docker image prune
-# finally, spin up the project again
+cp .env.example .env
+# populate the .env fields
 make up
-
-# installing a new package to backend
-docker exec -it cooklang-cookbook_api_1 bash
-pip install <package>
-pip freeze > requirements.txt
-dc build --no-cache api
-docker container prune
-docker image prune
-make up
-
-# to check the database
-docker exec -it cooklang-cookbook_db_1 bash
-psql -U postgres
->> \dt
->> select * from api_recipe;
-
-# reconnecting to all docker containers if detached
-dc logs -f
 ```
 
-## Known issues
-- Changing a recipe title changes its slug, which invalidates shared recipe URLs (that aren't bookmarked)
-- Duplicate ingredient marking gets overridden to the last ingredient value (ideally we would add units together, but that's outside cooklang spec)
-- In WYSIWYG, if you screw with highlighting overlapping ingredients too much, you'll break it (please don't do that...) - possible fixes: Range.commonAncestorContainer or Selection.containsNode()
+That will spin up your own local instance of the REST API and the frontend.  Ideally, everyone can tap into the same REST API instead of having individual ones, but I haven't worked on the CORS on my current API server to let that happen yet.
 
-## Useful links
-- https://freshman.tech/learn-node/
-- https://waelyasmina.medium.com/a-guide-into-using-handlebars-with-your-express-js-application-22b944443b65
-- https://forum.djangoproject.com/t/how-to-authenticate-django-rest-framework-api-calls-from-a-vue-js-client-using-session-authentication-and-httponly-cookies/5422
-- https://stackoverflow.com/questions/70113882/axios-how-exactly-to-preserve-session-after-successful-authorization-and-send
-- https://stackoverflow.com/questions/28100979/button-does-not-function-on-the-first-click
-- https://stackoverflow.com/questions/15772394/how-to-upload-display-and-save-images-using-node-js-and-express
-- https://appdividend.com/2022/03/03/node-express-image-upload-and-resize/
-- https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-- https://www.sitepoint.com/file-upload-form-express-dropzone-js/
-- https://stackoverflow.com/questions/20533191/dropzone-js-client-side-image-resizing
-- https://github.com/sitepoint-editors/image-uploads-dropzonejs-node-express
-- https://stackoverflow.com/questions/20726174/placeholder-for-contenteditable-div
-- https://stackoverflow.com/questions/52837460/serve-static-file-from-different-server-express-js
-- https://blog.stefanolaru.com/on-the-fly-image-resizing-with-aws-lambda-s3-and-cloudfront#lambda-api-gateway
-- https://medium.com/@antoniosito/deploy-a-robust-image-handling-resizing-solution-in-minutes-on-aws-512ac04093d7
+# Usage
 
+The recipe cookbook is constantly being developed right now.  I'll try to only push changes to `main` that I know are fully functioning, but no guarantees.  Tagged versions are more guaranteed to be fully functioning.
 
-
-## Credits
-- fry pan: <a href="https://www.flaticon.com/free-icon/frying-pan_4329602" title="cooking icons">Cooking icons created by Freepik - Flaticon</a>
-- list: <a href="https://www.flaticon.com/free-icons/list" title="list icons">List icons created by phatplus - Flaticon</a>
-- person: <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Bombasticon Studio - Flaticon</a>
-- upload: <a href="https://www.flaticon.com/premium-icon/upload_4131814" title="image icons">Image icons created by mim_studio - Flaticon</a>
-- cutting board: <a href="https://unsplash.com/@sanketshah">Sanket Shah</a>
-  
+The idea for this Cookbook is to allow any variety of "frontend skins" and you're by no means married to the one I've provided in this project.  Feel free to create an iOS or Android native app, or even your own frontend browser version using a different tech stack (maybe React or Vue?) to interact with the backend API!

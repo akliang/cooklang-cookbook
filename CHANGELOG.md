@@ -1,6 +1,6 @@
 # Changelog
 
-## v 0.1 (May 12, 2022)
+## v0.1 (May 12, 2022)
 - Initial working version
 - Features:
   - WYSIWYG editor (only for desktop)
