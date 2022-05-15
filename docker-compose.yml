@@ -38,13 +38,8 @@ services:
       - /code/node_modules
     ports:
       - "8003:8003"
-    environment:
-      - EXPRESS_SECRET=${EXPRESS_SECRET}
-      - CLOUDFRONT_URL=${CLOUDFRONT_URL}
-      - S3_LOCATION=${S3_LOCATION}
-      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    env_file:
+      - ./.env
     depends_on:
       - api
 

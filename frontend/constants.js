@@ -1,4 +1,4 @@
-const api_url = 'https://cookbook.albertliang.xyz/api';
+const api_url = process.env.COOKBOOK_API_URL;
 
 exports.api_login_url = api_url + '/api_login/';
 exports.api_register_url = api_url + '/api_register/';
