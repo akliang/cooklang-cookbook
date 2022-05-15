@@ -1,3 +1,7 @@
+#!make
+include .env
+export $(shell sed 's/=.*//' .env)
+
 build: 
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose build
 
@@ -21,3 +25,13 @@ conn-api:
 
 conn-db:
 	@docker exec -it cooklang-cookbook_db_1 bash
+
+docker-login:
+	@docker login docker.io -u $$DOCKER_USERNAME -p $$DOCKER_PASSWORD
+
+docker-logout:
+	@docker logout docker.io
+
+docker-push:
+	@docker push akliang/cookbook_api:latest
+	@docker push akliang/cookbook_api:latest
