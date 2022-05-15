@@ -11,14 +11,14 @@ const aws = require('aws-sdk');
 
 // multer and AWS S3 setup
 aws.config.update({
-  region: process.env.S3_LOCATION
+  region: C.s3_location
 });
 s3 = new aws.S3();
 
 var upload = multer({
   storage: multerS3({
       s3: s3,
-      bucket: process.env.S3_BUCKET_NAME,
+      bucket: C.s3_bucket_name
   })
 });
 
