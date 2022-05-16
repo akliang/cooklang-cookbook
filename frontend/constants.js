@@ -17,3 +17,4 @@ exports.s3_bucket_name = process.env.S3_BUCKET_NAME;
 exports.cloudfront_url = process.env.CLOUDFRONT_URL;
 exports.image_style = "fit-in";
 exports.image_size = "600x1200";
+exports.img_url =  this.cloudfront_url + "/" + this.image_style + "/" + this.image_size + "/";

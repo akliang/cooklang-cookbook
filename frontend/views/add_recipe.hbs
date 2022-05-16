@@ -52,7 +52,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
 <script type="text/javascript">
 Dropzone.autoDiscover = false;
-upload_icon = '<img src="/img/upload.png" class="h-24 mx-auto p-3">';
+upload_icon = '<img src="{{getS3img "upload.png"}}" class="h-24 mx-auto p-3">';
 
 theOne = new Dropzone("div#add-recipe", {
     autoProcessQueue: false,

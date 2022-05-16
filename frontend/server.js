@@ -34,9 +34,11 @@ const server = app.listen(8003, () => {
 
 // handlebars
 const { engine } = require ('express-handlebars');
-app.engine('.hbs', engine({extname: '.hbs', defaultLayout: 'body'}));
+const { getS3img } = require('./helpers')
+app.engine('.hbs', engine({extname: '.hbs', defaultLayout: 'body', helpers: {getS3img}}));
 app.set('view engine', '.hbs');
 app.set('views', './views');
+
 
 // routes
 const router_auth = require('./router_auth');

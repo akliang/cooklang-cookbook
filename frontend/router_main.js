@@ -50,12 +50,12 @@ router.get('/v/:username/:slug', (req, res) => {
     }
 
     if (json.image) {
-      img_url = C.cloudfront_url + "/" + C.image_style + "/" + C.image_size + "/" + json.image;
+      img = json.image;
     } else {
-      img_url = C.cloudfront_url + "/" + C.image_style + "/" + C.image_size + "/cutting_board.jpg";
+      img = "cutting_board.jpg";
     }
     
-    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin, img_url: img_url});
+    res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin, img: img});
   })
   .catch(error => {
     logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
