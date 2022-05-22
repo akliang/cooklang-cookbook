@@ -184,12 +184,27 @@ router.get('/delete/:slug', (req, res) => {
     })
     .then(response => {
       if (response.ok) {
-        req.flash('home_msg', 'Recipe deleted.');
-        res.redirect('/');
+        return response.json();
       } else {
         res.redirect('/');
         throw new Error(response.statusText);
       }
+    })
+    .then(json => {
+      // delete the image
+      s3.deleteObject({
+        Bucket: C.s3_bucket_name,
+        Key: json
+      }, function(err, data) {
+        if (err) {
+          res.redirect('/');
+          throw new Error(err);
+        }
+      });
+    })
+    .finally(() => {
+      req.flash('home_msg', 'Recipe deleted.');
+      res.redirect('/');
     })
     .catch(error => {
       logger.error("Problem deleting recipe (API key: " + req.session.apikey + ") // " + error.message, {service: "deleterecipe"});

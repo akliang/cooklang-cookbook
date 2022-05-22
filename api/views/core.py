@@ -222,8 +222,9 @@ class DeleteRecipe(APIView):
     recipe = Recipe.objects.get(slug=request.POST.get('slug'), chef=user)
 
     if recipe:
+      img_name = recipe.image
       recipe.delete()
-      return Response(True)
+      return Response(img_name)
     else:
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid delete recipe request for API key {apikey}")
