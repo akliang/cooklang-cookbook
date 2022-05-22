@@ -2,6 +2,8 @@ import re
 import zipfile
 import tempfile
 from pathlib import Path
+from collections import Counter
+import operator
 
 from django.http import JsonResponse, HttpResponse
 from django.db import IntegrityError
@@ -249,6 +251,47 @@ class BookmarkRecipe(APIView):
         apikey = parse_apikey_from_header(request)
         logger.warning(f"{self.__class__.__name__} - Invalid bookmark recipe request for API key {apikey}, chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+class WhatCanICook(APIView):
+  authentication_classes = [TokenAuthentication]
+  permission_classes = [IsAuthenticated]
+
+  def get(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+    if not user:
+      apikey = parse_apikey_from_header(request)
+      logger.warning(f"{self.__class__.__name__} - Invalid my_ingredients request for API key {apikey}")
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    # step through each recipe and parse the cooklang
+    recipes = Recipe.objects.filter(chef=user)
+    ingredient_counter = Counter()
+    for recipe in recipes:
+      proc_recipe = clprocess(recipe.recipe)
+      # [my_ingredients[i] += 1 for i in proc_recipe['ingredients']]
+      for key in proc_recipe['ingredients']:
+        ingredient_counter[key] += 1
+
+    my_ingredients = dict( sorted(ingredient_counter.items(), key=operator.itemgetter(1), reverse=True))
+
+    return JsonResponse(my_ingredients)
+    
+
+
+    # try:
+    #   # remove the bookmark
+    #   bookmark = Bookmark.objects.get(chef=user, recipe=recipe)
+    #   bookmark.delete()
+    #   return Response(True)
+    # except Bookmark.DoesNotExist:
+    #   # add the bookmark
+    #   if recipe and user:
+    #     Bookmark.objects.create(chef=user, recipe=recipe)
+    #     return Response(True)
+    #   else:
+    #     apikey = parse_apikey_from_header(request)
+    #     logger.warning(f"{self.__class__.__name__} - Invalid bookmark recipe request for API key {apikey}, chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
+    #     return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 # class ExportRecipes(APIView):
 #   authentication_classes = [TokenAuthentication]

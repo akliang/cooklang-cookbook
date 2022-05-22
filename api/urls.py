@@ -17,4 +17,5 @@ urlpatterns = [
   path('bookmark/', views.BookmarkRecipe.as_view(), name='bookmark_recipe'),
   path('view_bookmarks/', views.MyBookmarks.as_view(), name='my_bookmarks'),
   # path('export/', views.ExportRecipes.as_view(), name='export_recipes'),
+  path('whatcanicook/', views.WhatCanICook.as_view(), name='whatcanicook'),
 ]

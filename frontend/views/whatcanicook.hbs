@@ -1,0 +1,43 @@
+
+{{> logo}}
+
+<!-- TODO add help box -->
+
+<div class="text-xl mb-4">
+  What ingredients do you have?
+</div>
+
+<div>
+  I have
+  <input type="text" id="ingredient" class="border-0 border-b border-slate-400 -mt-4" placeholder="chicken" onKeyUp="checkIngredients()">
+</div>
+
+<ul class="">
+  <li class="hidden">chicken</li>
+  <li class="hidden">broccoli</li>
+  <li class="hidden">tomato</li>
+</ul>
+
+<br><br>
+
+{{#each ingredients}}
+{{@key}} - {{this}}<br>
+{{/each}}
+
+<script type="text/javascript">
+input = document.getElementById("ingredient");
+ingredients = document.getElementsByTagName("li");
+
+function checkIngredients() {
+  ingredient = input.value.toUpperCase();
+
+
+  Array.from(ingredients).forEach(function (e) {
+    if (e.textContent.toUpperCase().indexOf(ingredient) > -1) {
+      e.classList.remove("hidden");
+    } else {
+      e.classList.add("hidden");
+    }
+  });
+}  
+</script>

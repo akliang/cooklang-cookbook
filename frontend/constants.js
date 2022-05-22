@@ -11,6 +11,7 @@ exports.api_deleterecipe_url = api_url + '/delete/';
 exports.api_bookmarkrecipe_url = api_url + '/bookmark/';
 exports.api_viewbookmarkrecipes_url = api_url + '/view_bookmarks/';
 //exports.api_exportrecipes_url = api_url + '/export/';
+exports.api_whatcanicook_url = api_url + '/whatcanicook/';
 
 exports.s3_location = process.env.S3_LOCATION;
 exports.s3_bucket_name = process.env.S3_BUCKET_NAME;

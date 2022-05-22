@@ -67,6 +67,43 @@ router.get('/bookmarks', (req, res) => {
   }  
 });
 
+// my-kitchen view
+router.get('/kitchen', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/kitchen');
+  } else {
+    res.render('kitchen');
+  }  
+});
+
+// my-kitchen view
+router.get('/whatcanicook', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/whatcanicook');
+  } else {
+    fetch(C.api_whatcanicook_url, {
+      headers: {
+        "Authorization": "token " + req.session.apikey
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        res.redirect('/login');
+        throw new Error(response.statusText);
+      }
+    })
+    .then(json => {
+      console.log(json)
+      res.render('whatcanicook', {ingredients: json, shownav: true});
+    })
+    .catch(error => {
+      logger.error("Problem display my_ingredients (API key: " + req.session.apikey + ") // " + error.message, {service: "myingredients"});
+    });
+  }  
+});
+
 // import_export (get)
 // router.get('/import_export', (req, res) => {
 //   if (!h.loggedIn(req)) {
