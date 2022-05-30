@@ -1,0 +1,22 @@
+<!-- placeholder for form submission -->
+<textarea name="recipe" id="recipe" class="hidden"></textarea>
+
+<style>
+    [contentEditable=true]:empty:not(:focus)::before{
+        content:attr(placeholder);
+        color: #888;
+    }
+
+    #recipeeditor:focus{
+        outline:0;
+    }
+</style>
+
+<!-- wysiwyg editor -->
+<div
+    contenteditable="true"
+    class="w-full m-1 p-4 rounded-md text-base whitespace-pre-line text-left"
+    id="recipeeditor"
+    placeholder="Type recipe here">{{recipe}}</div>
+
+

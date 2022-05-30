@@ -1,16 +1,3 @@
-<!-- placeholder for form submission -->
-<textarea name="recipe" id="recipe" class="hidden"></textarea>
-
-<style>
-    [contentEditable=true]:empty:not(:focus)::before{
-        content:attr(placeholder);
-        color: #888;
-    }
-
-    #recipeeditor:focus{
-        outline:0;
-    }
-</style>
 
 <!-- ingredients list -->
 <a onClick="toggleIngredientsListOn()">
@@ -25,19 +12,9 @@
     <table id="ingredientstable" class="w-full table-fixed"></table>
 </div>
 
-<!-- wysiwyg editor -->
-<div
-    contenteditable="true"
-    class="w-full m-1 p-4 rounded-md text-base whitespace-pre-line text-left"
-    id="recipeeditor"
-    placeholder="Type recipe here">{{recipe}}</div>
+{{> recipeeditor_core}}
 
 <div id="editmenu" class="hidden absolute rounded-md bg-slate-300 text-sm p-3 cursor-pointer">Ingredient</div>
-
-
-
-
-
 
 
 <script type="text/javascript">
