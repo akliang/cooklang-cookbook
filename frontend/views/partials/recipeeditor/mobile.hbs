@@ -1,0 +1,24 @@
+
+{{> recipeeditor/ingredients_list}}
+
+{{> recipeeditor/core placeholder="Dictate your recipe and click 'Format Recipe' to convert 'first', 'next', 'and then', and 'finally' into line breaks."}}
+
+<div id="formatRecipeBtn" class="rounded-md bg-blue-400 text-sm p-3 cursor-pointer mb-2">Format Recipe</div>
+
+<script type="text/javascript">
+const container = document.getElementById("recipeeditor");
+const formatRecipeBtn = document.getElementById("formatRecipeBtn");
+const keyWords = ['first', 'next', 'and then', 'finally'];
+
+formatRecipeBtn.addEventListener("click", (e) => {
+    var text = container.innerText;
+    keyWords.forEach(word => {
+        if (word == "first") {
+            text = text.replace(word, "");    
+        } else {
+            text = text.replace(word, "\n\n");
+        }
+    });
+    container.innerText = text;
+});
+</script>

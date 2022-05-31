@@ -1,18 +1,7 @@
 
-<!-- ingredients list -->
-<a onClick="toggleIngredientsListOn()">
-    <div id="ingredientlistbutton1" class="rounded-md bg-green-200 text-sm p-3 cursor-pointer">Ingredients List</div>
-</a>
-<a onClick="toggleIngredientsListOff()">
-    <div id="ingredientlistbutton2" class="rounded-t-md bg-green-200 text-sm p-3 cursor-pointer hidden">Ingredients List</div>
-</a>
-<div id="ingredientlist" class="rounded-b-md text-sm border border-green-200 p-3 hidden">
-    <span id="ingredientslistplaceholder1">No ingredients!</span>
-    <span id="ingredientslistplaceholder2" class="text-slate-500 italic hidden">Quantity is optional</span>
-    <table id="ingredientstable" class="w-full table-fixed"></table>
-</div>
+{{> recipeeditor/ingredients_list}}
 
-{{> recipeeditor_core}}
+{{> recipeeditor/core placeholder="Type recipe here"}}
 
 <div id="editmenu" class="hidden absolute rounded-md bg-slate-300 text-sm p-3 cursor-pointer">Ingredient</div>
 
@@ -22,24 +11,6 @@
 const container = document.getElementById("recipeeditor");
 const editmenu = document.getElementById("editmenu");
 var ingredientslist = {};
-const ingredientstable = document.getElementById("ingredientstable");
-const ingredientslistplaceholder1 = document.getElementById("ingredientslistplaceholder1");
-const ingredientslistplaceholder2 = document.getElementById("ingredientslistplaceholder2");
-
-
-// ingredient list toggle
-function toggleIngredientsListOn() {
-    document.getElementById("ingredientlistbutton1").classList.add("hidden");
-    document.getElementById("ingredientlistbutton2").classList.remove("hidden");
-    document.getElementById("ingredientlist").classList.remove("hidden");
-}
-
-function toggleIngredientsListOff() {
-    document.getElementById("ingredientlistbutton1").classList.remove("hidden");
-    document.getElementById("ingredientlistbutton2").classList.add("hidden");
-    document.getElementById("ingredientlist").classList.add("hidden");
-}
-
 
 // wysiwyg logic
 function checkHighlight(e) {
