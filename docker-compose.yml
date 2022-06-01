@@ -21,7 +21,7 @@ services:
     volumes:
       - .:/code
     ports:
-      - "8002:8002"
+      - "${API_PORT}:8002"
     depends_on:
       - db
   frontend:
@@ -37,7 +37,7 @@ services:
       - ./frontend:/code
       - /code/node_modules
     ports:
-      - "8003:8003"
+      - "${WEB_PORT}:8003"
     env_file:
       - ./.env
     depends_on:
