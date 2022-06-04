@@ -1,0 +1,109 @@
+<!-- ingredients list -->
+<a onClick="toggleIngredientsListOn()">
+    <div id="ingredientlistbutton1" class="rounded-md bg-green-200 text-sm p-3 cursor-pointer">Ingredients List</div>
+</a>
+<a onClick="toggleIngredientsListOff()">
+    <div id="ingredientlistbutton2" class="rounded-t-md bg-green-200 text-sm p-3 cursor-pointer hidden">Ingredients List</div>
+</a>
+<div id="ingredientlist" class="rounded-b-md text-sm border border-green-200 p-3 hidden">
+    <span id="ingredientslistplaceholder2" class="text-slate-500 italic hidden">Quantity is optional</span>
+    <table id="ingredientstable" class="w-full table-fixed"></table>
+</div>
+
+<script type="text/javascript" src="./ingredients.json"></script>
+<script type="text/javascript">
+const ingredientstable = document.getElementById("ingredientstable");
+const ingredientslistplaceholder2 = document.getElementById("ingredientslistplaceholder2");
+var ingredientslist = {};
+const allIngredientsRaw = require('./ingredients.json');
+const allIngredients = JSON.parse(allIngredientsRaw);
+console.log(allIngredients);
+
+
+// ingredient list toggle
+function toggleIngredientsListOn() {
+    document.getElementById("ingredientlistbutton1").classList.add("hidden");
+    document.getElementById("ingredientlistbutton2").classList.remove("hidden");
+    document.getElementById("ingredientlist").classList.remove("hidden");
+}
+
+function toggleIngredientsListOff() {
+    document.getElementById("ingredientlistbutton1").classList.remove("hidden");
+    document.getElementById("ingredientlistbutton2").classList.add("hidden");
+    document.getElementById("ingredientlist").classList.add("hidden");
+}
+
+function checkForIngredients() {
+    var text = document.getElementById("recipeeditor").innerText;
+
+
+}
+
+document.getElementById("recipeeditor").addEventListener("input", (e) => {
+    ingredientslist = {};
+
+    var text = ingredientInput.value;
+    // replace all newlines with commas
+    text = text.replace(/\n+/g, ",");
+
+    var ingredients = text.split(",");
+    // step through every ingredient except the last one
+    ingredients.forEach(ingredient => {
+        ingredient_clean = ingredient.trim();
+        // sometimes ingredient_client is empty
+        if (ingredient_clean && !ingredientslist.hasOwnProperty(ingredient_clean)) {
+            ingredientslist[ingredient_clean] = '';
+        }
+    })
+
+    // re-render the ingredients table
+    populateIngredientsTable();
+})
+
+function populateIngredientsTable() {
+    // drop all table rows
+    ingredientstable.textContent = "";
+
+    // add each ingredient as a row
+    for (let [ingredient, qty] of Object.entries(ingredientslist)) {
+        // set up table elements
+        var tr = document.createElement("tr");
+        var tdLeft = document.createElement("td");
+        tdLeft.classList.add("text-right", "p-2");
+        var tdRight = document.createElement("td");
+        tdRight.classList.add("text-left", "p-2");
+
+        // create left-td
+        var fieldLabel = document.createElement("span");
+        fieldLabel.classList.add("text-sm", "text-green-500")
+        fieldLabel.innerHTML = ingredient;
+        tdLeft.appendChild(fieldLabel);
+        var fieldName = document.createElement("input");
+        fieldName.setAttribute("type", "hidden");
+        fieldName.setAttribute("name", "ingredientname[]");
+        fieldName.setAttribute("value", ingredient);
+        tdLeft.appendChild(fieldName);
+
+        // create right-td
+        var fieldQty = document.createElement("input");
+        fieldQty.setAttribute("type", "text");
+        fieldQty.setAttribute("name", "ingredientqty[]");
+        fieldQty.setAttribute("placeholder", "Qty");
+        fieldQty.setAttribute("value", qty);
+        fieldQty.classList.add("w-1/2", "border-0", "text-sm", "mr-2");
+        tdRight.appendChild(fieldQty);
+        
+        // attach to DOM
+        tr.appendChild(tdLeft);
+        tr.appendChild(tdRight);
+        ingredientstable.appendChild(tr); 
+    };
+
+    // toggle the placeholder text
+    if (ingredientstable.childElementCount == 0) {
+        ingredientslistplaceholder2.classList.add("hidden");
+    } else {
+        ingredientslistplaceholder2.classList.remove("hidden");
+    }
+}
+</script>
