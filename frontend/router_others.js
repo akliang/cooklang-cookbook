@@ -72,7 +72,7 @@ router.get('/kitchen', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login?next=/kitchen');
   } else {
-    res.render('kitchen');
+    res.render('kitchen', {shownav: true});
   }  
 });
 
