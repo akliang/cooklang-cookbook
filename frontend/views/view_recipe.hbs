@@ -38,7 +38,8 @@
 
 <div class="text-sm text-blue-400" id="msg"></div>
 
-<img src="{{getS3img img}}" class="w-3/4 rounded-md mx-auto my-6">
+<img src="/img/spinner.gif" id="spinner" class="rounded-lg mx-auto my-6 border border-slate-200">
+<img src="{{getS3img img}}" id="recipe_img" class="w-3/4 rounded-md mx-auto my-6">
 
 <table class="table-fixed w-3/4 mx-auto text-sm">
   <tbody>
@@ -128,6 +129,12 @@
 </div>
 
 <script type="text/javascript">
+$('#spinner').show();
+$(window).on('load', function() {
+  console.log("loaded")
+  $('#spinner').hide();
+});
+
 function confirmDelete() {
   currentState = document.getElementById("confirmDeleteModal").style.display;
   if (currentState == "block") {
