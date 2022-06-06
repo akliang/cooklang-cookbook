@@ -17,3 +17,7 @@ class Recipe(models.Model):
 class Bookmark(models.Model):
     chef = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+class Chef_Settings(models.Model):
+    chef = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    browsable_recipes = models.IntegerField()

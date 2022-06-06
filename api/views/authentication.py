@@ -11,6 +11,7 @@ from rest_framework.authentication import get_authorization_header
 from rest_framework.views import APIView
 
 from api.forms import ChefCreationForm
+from api.models import Chef_Settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -94,3 +95,32 @@ def lookup_user_by_api(request):
     return token.user
   else:
     return None
+
+class Settings(APIView):
+  def post(self, request, *args, **kw):
+    user = lookup_user_by_api(request)
+    if user:
+      # if value is supplied, then we are trying to write in a new value
+      if 'value' in kw:
+        try:
+          obj = Chef_Settings.objects.get(chef=user)
+          setattr(obj, 'browsable_recipes', kw['value'])
+          obj.save()
+        except Chef_Settings.DoesNotExist:
+          obj = Chef_Settings(chef=user, browsable_recipes=kw['value'])
+          obj.save()
+        return Response(True)
+      # we are polling what the stored value is
+      else:
+        try:
+          obj = Chef_Settings.objects.get(chef=user)
+          if obj.browsable_recipes:
+            return Response(True)
+          else:
+            return Response(False)
+        except:
+          return Response(False)
+    else:
+      apikey = parse_apikey_from_header(request)
+      logger.warning(f"{self.__class__.__name__} - Invalid settings attempt using API key {apikey}")
+      return Response("Something went wrong - settings not saved.", status=status.HTTP_403_FORBIDDEN)

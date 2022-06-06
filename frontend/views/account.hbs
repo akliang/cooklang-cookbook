@@ -8,6 +8,51 @@
   {{msg}}
 </div>
 
+<style type="text/css">
+  /* Toggle switch */
+  input:checked ~ .dot {
+    transform: translateX(100%);
+    background-color: #1e40af;
+  }
+
+  input:checked ~ .line {
+    background-color: #93c5fd;
+  }
+</style>
+
+<div class="w-1/2 mx-auto">
+  <div class="border border-slate-200 rounded-md p-4 mb-3">
+      <!-- Toggle switch -->
+      <div class="flex items-center justify-center w-full mb-6">
+        
+        <label 
+          for="browsable_switch"
+          class="flex items-center cursor-pointer"
+        >
+          <!-- toggle -->
+          <div class="relative">
+            <!-- input -->
+            <input id="browsable_switch" type="checkbox" class="sr-only" {{checked}}/>
+            <!-- line -->
+            <div class="line w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+            <!-- dot -->
+            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+          </div>
+          <!-- label -->
+          <div class="ml-3 text-gray-700 text-sm">
+            All recipes browsable
+          </div>
+        </label>
+      </div>
+
+      <p class="text-sm">
+        <b>OFF: </b>Shared recipes are visible<br>
+        <b>ON: </b>Entire profile is browsable
+      </p>
+  </div>
+
+</div>
+
 <div class="w-1/2 mx-auto">
   <a href="/logout">
     <div class="p-4 text-base border border-slate-200 rounded-md mb-3 block">Logout</div>
@@ -91,6 +136,7 @@
   </div>
 </div>
 
+<script src="./jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
 function confirmDelete() {
   currentState = document.getElementById("confirmDeleteModal").style.display;
@@ -100,4 +146,29 @@ function confirmDelete() {
     document.getElementById("confirmDeleteModal").style.display = "block";
   }
 }
+
+document.getElementById("browsable_switch").addEventListener("change", () => {
+  let settings_url = "/settings/make_browsable?val="
+
+  if (document.getElementById("browsable_switch").checked) {
+    settings_url += "1"
+  } else {
+    settings_url += "0"
+  }
+  $.ajax({
+    url: settings_url,
+    method: 'GET',
+    success: function(data){ 
+      //success function
+      //return data form server
+      console.log("Success")
+      console.log(data)
+    },
+    error: function(data){ //error function
+    console.log("Error")
+      console.log(data)
+    }
+  });
+});
+
 </script>

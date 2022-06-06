@@ -9,6 +9,7 @@ urlpatterns = [
   path('api_delete/', views.DeleteAccount.as_view(), name='api_delete'),
   path('api_changepw/', views.ChangeAccountPassword.as_view(), name='api_changepw'),
   path('view/<str:username>/<str:slug>', views.RecipeView.as_view(), name='view_recipe'),
+  path('view/<str:username>/', views.ChefView.as_view(), name='chef_view'),
   path('view_by_token/', views.GetRecipeWithToken.as_view(), name='get_recipe_with_token'),
   path('view/', views.MyRecipes.as_view(), name='my_recipes'),
   path('add/', views.AddRecipe.as_view(), name='add_recipe'),
@@ -18,4 +19,6 @@ urlpatterns = [
   path('view_bookmarks/', views.MyBookmarks.as_view(), name='my_bookmarks'),
   # path('export/', views.ExportRecipes.as_view(), name='export_recipes'),
   path('whatcanicook/', views.WhatCanICook.as_view(), name='whatcanicook'),
+  path('settings/browsable_recipes/', views.Settings.as_view(), name='browsable_recipe_poll'),
+  path('settings/browsable_recipes/<int:value>', views.Settings.as_view(), name='browsable_recipe_write'),
 ]

@@ -98,8 +98,55 @@ router.get('/account', (req, res) => {
   if (!h.loggedIn(req)) {
     res.redirect('/login?next=/account');
   } else {
-    res.render('account', {msg: req.flash('account_msg'), shownav: true});
+    // grab the current browsable_recipe value
+    fetch(C.api_settingsbrowsable_url, {
+      method: 'POST',
+      headers: {
+        "Authorization": "token " + req.session.apikey
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then(flag => {
+      if (flag) {
+        checked = "checked";
+      } else {
+        checked = "";
+      }
+      res.render('account', {msg: req.flash('account_msg'), checked: checked, shownav: true});
+    })
+    .catch(error => {
+      logger.warn("Error loading account page (API key: " + req.session.apikey + ") // " + error.message, {service: "account"});
+      res.render('404');
+    })
+    
   }
+});
+
+
+// account page - make profile browsable (get)
+router.get('/settings/make_browsable', (req, res) => {
+  if (!h.loggedIn(req)) {
+    res.redirect('/login?next=/account');
+  } else {
+    fetch(C.api_settingsbrowsable_url + req.query.val, {
+      method: 'POST',
+      headers: {
+        "Authorization": "token " + req.session.apikey
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        res.sendStatus(200);
+      }
+    })
+    .catch(error => {
+      logger.warn("Problem changing setting value (API key: " + req.session.apikey + ") // " + error.message, {service: "settings"});
+    })
+  }  
 });
 
 // delete account (post)

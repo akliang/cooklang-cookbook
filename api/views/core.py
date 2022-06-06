@@ -17,7 +17,7 @@ from rest_framework.authentication import TokenAuthentication
 from api.forms import RecipeForm
 from api.helpers.cooklang import cooklang_processor as clprocess
 from api.views.authentication import lookup_user_by_api, parse_apikey_from_header
-from api.models import Recipe, Bookmark
+from api.models import Recipe, Bookmark, Chef_Settings
 from api.serializers import RecipeSerializer
 
 import logging
@@ -48,6 +48,23 @@ class RecipeView(APIView):
     except Recipe.DoesNotExist:
       logger.info(f"{self.__class__.__name__} - Invalid recipe request for chef \"{kw['username']}\" and slug \"{kw['slug']}\"")
       return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class ChefView(APIView):
+  authentication_classes = ()
+  permission_classes = (AllowAny,)
+
+  def get(self, request, *args, **kw):
+    try:
+      # check if chef username is publicly accessible
+      all_settings = Chef_Settings.objects.filter(chef__username=kw['username'])
+      if all_settings and all_settings[0].browsable_recipes:
+        recipes = Recipe.objects.filter(chef__username=kw['username'])
+        serialized = RecipeSerializer(recipes, many=True)
+        return JsonResponse(serialized.data, safe=False)
+      else:
+        return Response(False)
+    except Chef_Settings.DoesNotExist:
+      return Response(False)
 
 class GetRecipeWithToken(APIView):
   authentication_classes = [TokenAuthentication]

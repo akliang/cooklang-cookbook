@@ -58,7 +58,29 @@ router.get('/v/:username/:slug', (req, res) => {
     res.render('view_recipe', {data: json, username: req.params.username, slug: req.params.slug, showhr: showhr, loggedin: loggedin, img: img});
   })
   .catch(error => {
-    logger.warn("Problem loading recipe \"/v/" + req.params.username + "/" + req.params.slug + "\" // " + error.message, {service: "viewrecipe"});
+    logger.warn("Problem loading recipe /v/" + req.params.username + "/" + req.params.slug + " // " + error.message, {service: "viewrecipe"});
+    res.render('404')
+  });
+});
+
+// view chef
+router.get('/v/:username/', (req, res) => {
+  fetch(C.api_viewrecipes_url + req.params.username + '/', {
+    headers: {
+      "Authorization": "token " + req.session.apikey,
+    }
+  })
+  .then(response => {
+    return response.json()
+  })
+  .then(json => {
+    // capitalize the first letter
+    chef_name = req.params.username;
+    chef_name = chef_name.charAt(0).toUpperCase() + chef_name.slice(1)
+    res.render('home', {title: chef_name + "'s Recipes", recipes: json, shownav: true});
+  })
+  .catch(error => {
+    logger.warn("Problem viewing chef profile /v/" + req.params.username + " // " + error.message, {service: "viewrecipe"});
     res.render('404')
   });
 });
