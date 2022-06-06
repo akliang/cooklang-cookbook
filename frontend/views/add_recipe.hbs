@@ -35,7 +35,7 @@
         </div>
       </a>
       <div class="col-span-2">
-        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md cursor-pointer" type="button" value="Save" id="submit-recipe">
+        <input class="w-full bg-blue-300 hover:bg-blue-400 p-3 rounded-md cursor-pointer disabled:bg-blue-200 disabled:cursor-wait" type="button" value="Save" id="submit-recipe">
       </div>
     </div>
   </form>
@@ -77,6 +77,10 @@ theOne = new Dropzone("div#add-recipe", {
 
         // First change the button to actually tell Dropzone to process the queue.
         document.getElementById("submit-recipe").addEventListener("click", function(e) {
+          // disable save button
+          document.getElementById("submit-recipe").disabled = true;
+          document.getElementById("submit-recipe").value = 'Saving...';
+
           // move the recipeeditor content into the textarea
           document.getElementById("recipe").value = document.getElementById("recipeeditor").innerText;
 
