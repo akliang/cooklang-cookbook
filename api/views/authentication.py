@@ -77,25 +77,6 @@ class ChangeAccountPassword(APIView):
       logger.warning(f"{self.__class__.__name__} - Invalid password reset attempt using API key {apikey}")
       return Response("Something went wrong - password not changed.", status=status.HTTP_403_FORBIDDEN)
 
-  
-# helper function to grab the API key from the header
-def parse_apikey_from_header(request):
-  auth = get_authorization_header(request).split()
-  apikey = auth[1].decode()
-  if apikey == 'undefined' or apikey == 'null':
-    return None
-  else:
-    return apikey
-
-# helper function to translate the apikey into a User object
-def lookup_user_by_api(request):
-  apikey = parse_apikey_from_header(request)
-  if apikey:
-    token = Token.objects.get(key=apikey)
-    return token.user
-  else:
-    return None
-
 class Settings(APIView):
   def post(self, request, *args, **kw):
     user = lookup_user_by_api(request)
@@ -124,3 +105,21 @@ class Settings(APIView):
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid settings attempt using API key {apikey}")
       return Response("Something went wrong - settings not saved.", status=status.HTTP_403_FORBIDDEN)
+  
+# helper function to grab the API key from the header
+def parse_apikey_from_header(request):
+  auth = get_authorization_header(request).split()
+  apikey = auth[1].decode()
+  if apikey == 'undefined' or apikey == 'null':
+    return None
+  else:
+    return apikey
+
+# helper function to translate the apikey into a User object
+def lookup_user_by_api(request):
+  apikey = parse_apikey_from_header(request)
+  if apikey:
+    token = Token.objects.get(key=apikey)
+    return token.user
+  else:
+    return None
