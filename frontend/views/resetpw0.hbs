@@ -1,0 +1,31 @@
+{{> logo}}
+
+<div class="w-2/3 mx-auto">
+  <div class="p-3 text-sm text-red-400" id="msg">
+      {{msg}}
+  </div>
+    
+  <form action="/resetpw0" method="post" id="resetpw">
+    <div class="w-full mb-2">
+      <input type="email" class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="email" placeholder="Email" required autofocus>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 w-full mx-auto">
+      <a href="/login">
+        <div class="bg-transparent border-transparent p-3 rounded-md text-base bg-red-400">
+          Cancel
+        </div>
+      </a>
+      <div>
+        <input class="bg-transparent border-transparent p-3 rounded-md text-base bg-lime-500 w-full cursor-pointer disabled:bg-lime-200" type="submit" value="Submit" id="submit">
+      </div>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+document.getElementById("resetpw").addEventListener("submit", () => {
+  document.getElementById("submit").disabled = true;
+  document.getElementById("submit").value = "Working...";
+});
+</script>

@@ -1,7 +1,14 @@
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.core.mail import send_mail, BadHeaderError
 
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -76,6 +83,58 @@ class ChangeAccountPassword(APIView):
       apikey = parse_apikey_from_header(request)
       logger.warning(f"{self.__class__.__name__} - Invalid password reset attempt using API key {apikey}")
       return Response("Something went wrong - password not changed.", status=status.HTTP_403_FORBIDDEN)
+
+class RequestResetPassword(APIView):
+  def post(self, request, *args, **kw):
+    form = PasswordResetForm(request.POST)
+    if form.is_valid():
+      email = form.cleaned_data['email']
+      users = User.objects.filter(email=email)
+      if users.exists():
+        for user in users:
+          subject = "Password reset requested"
+          email_template_name = "api/password_reset_email.txt"
+          c = {
+            "email": user.email,
+            "domain": settings.FRONTEND_URL,
+            "endpoint": "resetpw",
+            "site_name": "Cookbook",
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "user": user,
+            "token": default_token_generator.make_token(user),
+          }
+          email = render_to_string(email_template_name, c)
+          try:
+            send_mail(subject, email, settings.ADMIN_EMAIL, [user.email], fail_silently=False)
+            logger.info(f"{self.__class__.__name__} - Password reset requested for {user.username}")
+            return Response(True)
+          except BadHeaderError:
+            return Response("Invalid header", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+      else:
+        logger.warning(f"{self.__class__.__name__} - Invalid password reset requested for email {email}")
+        return Response("User not found.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+      logger.warning(f"{self.__class__.__name__} - Invalid password reset requested for email {request.POST['email']}")
+      return Response("Invalid email.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ResetPassword(APIView):
+  def post(self, request, *args, **kw):
+    # decode the user
+    pk = urlsafe_base64_decode(request.POST['user'])
+    user = User.objects.get(pk=pk)
+
+    # check that the token matches the user
+    if default_token_generator.check_token(user, request.POST['token']):
+      form = SetPasswordForm(user, request.POST)
+      if form.is_valid():
+        form.save()
+        logger.info(f"{self.__class__.__name__} - Password reset changed for {user.username}")
+        return Response("Password changed.")
+      else:
+        return Response(form.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+      logger.warning(f"{self.__class__.__name__} - Invalid user/token combination for password reset (user: {request.POST['user']}, token: {request.POST['token']})")
+      return JsonResponse({"msg": ["Invalid token - user not found."]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Settings(APIView):
   def post(self, request, *args, **kw):

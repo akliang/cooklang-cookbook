@@ -1,0 +1,44 @@
+
+{{> logo}}
+
+<div class="w-2/3 mx-auto">
+  <div class="mb-4 text-xl">Reset Password</div>
+
+  <div class="p-3 text-sm text-red-400" id="msg">
+      {{#each msg}}
+        {{#each this}}
+          <p>{{this}}</p>
+        {{/each}}
+      {{/each}}
+  </div>
+
+  <form action="/resetpw/{{user}}/{{token}}" method="post" id="reset_pw">
+    <div class="w-full">
+      <input type="password" class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="new_password1" id="password1" placeholder="New password" required minlength='8' autofocus>
+    </div>
+
+    <div class="w-full mb-2">
+      <input type="password" class="w-full m-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" name="new_password2" id="password2" placeholder="New password (repeat)" required minlength='8'>
+    </div>
+
+    <input type="hidden" name="user" value="{{user}}">
+    <input type="hidden" name="token" value="{{token}}">
+
+    <div>
+        <input class="bg-transparent border-transparent p-3 rounded-md text-base bg-lime-500 w-full cursor-pointer" type="submit" value="Update">
+    </div>
+  </form>
+</div>
+
+
+<script type="text/javascript">
+document.getElementById("reset_pw").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  if (document.getElementById("password1").value == document.getElementById("password2").value) {
+    document.getElementById("reset_pw").submit();
+  } else {
+    document.getElementById("msg").innerHTML = "Passwords do not match."
+  }
+});
+</script>

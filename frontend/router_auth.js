@@ -215,4 +215,76 @@ router.post('/change_password', (req, res) => {
   });
 });
 
+// reset password (get)
+router.get('/resetpw0', (req, res) => {
+  res.render('resetpw0');
+});
+
+// reset password (post)
+router.post('/resetpw0', (req, res) => {
+  fetch(C.api_requestresetpassword_url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: qs.stringify({
+      'email': req.body.email
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      res.render('resetpw0', {msg: "Password reset sent to email."});
+      // break the promise chain
+      return { then: function() {} };
+    } else {
+      return response.json()
+    }
+  })
+  .then(json => {
+    res.render('resetpw0', {msg: json});
+    throw new Error(JSON.stringify(json));
+  })
+  .catch(error => {
+    logger.warn("Problem looking up email for pw reset // " + error.message, {service: "resetpw0"});
+  });
+});
+
+// reset password - change password (get)
+router.get('/resetpw/:user/:token', (req, res) => {
+  res.render('resetpw', {user:req.params.user, token:req.params.token});
+});
+
+router.post('/resetpw/:user/:token', (req, res) => {
+  fetch(C.api_resetpassword_url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: qs.stringify({
+      'new_password1': req.body.new_password1,
+      'new_password2': req.body.new_password2,
+      'user': req.params.user,
+      'token': req.params.token,
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      req.flash('login_msg', 'Password has been changed.');
+      res.redirect('/login');
+      // break the promise chain
+      return { then: function() {} };
+    } else {
+      return response.json()
+    }
+  })
+  .then(json => {
+    console.log(json)
+    res.render('resetpw', {msg: json});
+    throw new Error(JSON.stringify(json));
+  })
+  .catch(error => {
+    logger.warn("Problem changing password for user " + req.params.user + " and token " + req.params.token + " // " + error.message, {service: "resetpw"});
+  });
+});
+
 module.exports = router;

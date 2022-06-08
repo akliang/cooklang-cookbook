@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
   env('DOMAIN_NAME')
 ]
 
+FRONTEND_URL = env('COOKBOOK_FRONTEND_URL')
 
 # Application definition
 
@@ -191,3 +192,11 @@ REST_FRAMEWORK = {
     'rest_framework.renderers.BrowsableAPIRenderer',
   ],
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+ADMIN_EMAIL = env('EMAIL_USER')
