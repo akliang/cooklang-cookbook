@@ -12,7 +12,7 @@ up:
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose up
 
 up-d:
-	@export UID=${CURRENT_UID}; export GID=${CURRENT_GID}; docker-compose up -d
+	@USERID=$(id -u) GROUPID=$(id -g) docker-compose up -d
 
 down: 
 	@USERID=$(id -u) GROUPID=$(id -g) docker-compose down
@@ -20,11 +20,17 @@ down:
 test:
 	@docker-compose run api python3 manage.py test api.tests.test_authentication_views
 
-conn-api:
-	@docker exec -it cooklang-cookbook_api_1 bash
-
 conn-db:
 	@docker exec -it cooklang-cookbook_db_1 bash
+
+conn-db-prod:
+	@docker exec -it cooklang-cookbook-prod_db_1 bash
+
+migrate:
+	@docker exec -it cooklang-cookbook_api_1 python3 manage.py migrate
+
+migrate-prod:
+	@docker exec -it cooklang-cookbook-prod_api_1 python3 manage.py migrate
 
 docker-login:
 	@docker login docker.io -u $$DOCKER_USERNAME -p $$DOCKER_PASSWORD
